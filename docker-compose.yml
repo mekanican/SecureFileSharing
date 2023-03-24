@@ -1,0 +1,57 @@
+version: '3.7'
+
+# Specify service used
+services:
+  # Main Database
+  mysql_database:
+    image: mysql:latest
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root 
+      - MYSQL_DATABASE=db_test
+    volumes:
+      - ./DB/schema.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./DB/data.sql:/docker-entrypoint-initdb.d/2.sql
+      - mysql_volume:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      timeout: 30s
+      retries: 20
+    
+
+  # phpMyAdmin alternative (administrate db)
+  adminer:
+    image: adminer:latest
+    restart: always
+    environment:
+      - ADMINER_DEFAULT_DB_HOST=mysql_database
+      - ADMINER_DEFAULT_DB_NAME=db_test
+    ports:
+      - 8080:8080
+    depends_on: 
+      mysql_database:
+        condition: service_healthy
+
+  nodejs_backend:
+    image: "node:alpine"
+    user: "root"
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=development 
+    volumes:
+      - ./Backend:/home/node/app
+      - node_modules_volume:/home/node/app/node_modules
+
+    ports:
+      - 20222:20222
+      - 9229:9229 # Debug port, Should not exposed on production server
+
+    command: ash -c "npm install --save&&npm start"
+    depends_on: 
+      mysql_database:
+        condition: service_healthy
+
+# Specify volume (keep on each reload)
+volumes:
+  node_modules_volume:
+  mysql_volume:
