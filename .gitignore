@@ -106,3 +106,6 @@ dist
 # python
 
 *.pyc
+
+# Minio storage
+FileStorage/minio/*
