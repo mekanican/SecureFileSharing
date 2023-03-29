@@ -17,6 +17,8 @@ services:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
       timeout: 30s
       retries: 20
+    ports:
+      - 3306:3306
     
 
   # phpMyAdmin alternative (administrate db)
@@ -32,26 +34,26 @@ services:
       mysql_database:
         condition: service_healthy
 
-  nodejs_backend:
-    image: "node:alpine"
-    user: "root"
-    working_dir: /home/node/app
-    environment:
-      - NODE_ENV=development 
-    volumes:
-      - ./Backend:/home/node/app
-      - node_modules_volume:/home/node/app/node_modules
+  # nodejs_backend:
+  #   image: "node:alpine"
+  #   user: "root"
+  #   working_dir: /home/node/app
+  #   environment:
+  #     - NODE_ENV=development 
+  #   volumes:
+  #     - ./Backend:/home/node/app
+  #     - node_modules_volume:/home/node/app/node_modules
 
-    ports:
-      - 20222:20222
-      - 9229:9229 # Debug port, Should not exposed on production server
+  #   ports:
+  #     - 20222:20222
+  #     - 9229:9229 # Debug port, Should not exposed on production server
 
-    command: ash -c "npm install --save&&npm start"
-    depends_on: 
-      mysql_database:
-        condition: service_healthy
+  #   command: ash -c "npm install --save&&npm start"
+  #   depends_on: 
+  #     mysql_database:
+  #       condition: service_healthy
 
 # Specify volume (keep on each reload)
 volumes:
-  node_modules_volume:
+  # node_modules_volume:
   mysql_volume:
