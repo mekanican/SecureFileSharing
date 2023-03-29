@@ -11,6 +11,8 @@ djoser = "==2.1.0"
 django-filter = "*"
 isort = "*"
 pycryptodome = "*"
+django-livereload-server = "*"
+minio = "*"
 
 [dev-packages]
 
