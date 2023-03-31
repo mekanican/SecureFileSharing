@@ -1,4 +1,5 @@
-"""WSGI config for SFS project.
+"""
+WSGI config for SFS project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -8,8 +9,8 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 
 import os
 
-from django.core.wsgi import get_wsgi_application  # type: ignore
+from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "SFS.settings")
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'SFS.settings')
 
 application = get_wsgi_application()
