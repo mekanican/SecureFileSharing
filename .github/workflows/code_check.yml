@@ -26,7 +26,8 @@ jobs:
           python-version: "3.11"
       - name: Installing dependencies
         run: |
-          pip install --requirement Backend/requirements/development.txt
+          pip install --requirement backend/requirements/development.txt
       - name: Running coding styles check
         run: |
-          ./Backend/check_coding_styles.sh
+          cd backend
+          ./check_coding_styles.sh
