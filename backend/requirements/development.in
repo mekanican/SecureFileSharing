@@ -1,0 +1,76 @@
+# * FOR CODING STYLES *
+# Linters
+# https://pylama.readthedocs.io/en/latest/#configuration-files
+pylint
+
+# https://flake8.pycqa.org/en/latest/
+# Not used the latest version for better support of 3rd party plugins:
+# * https://github.com/wemake-services/flake8-broken-line/issues/281
+flake8<6
+
+# A plugin for Flake8 finding likely bugs and design problems in your program.
+# https://github.com/PyCQA/flake8-bugbear
+flake8-bugbear
+
+# Extension to enforce better comma placement.
+# https://github.com/PyCQA/flake8-commas
+flake8-commas
+
+# Much stricter linter for docstrings. Check periods, empty lines, etc.
+flake8-docstrings
+
+# A flake8 plugin checking common style issues or inconsistencies with pytest-based tests.
+# https://github.com/m-burst/flake8-pytest-style
+flake8-pytest-style
+
+# Flake8 plugin for linting quotes style
+# https://github.com/zheller/flake8-quotes
+flake8-quotes
+
+# A flake8 plugin that warn about backslashes usage
+# https://github.com/wemake-services/flake8-broken-line
+flake8-broken-line
+
+# McCabe complexity checker
+# https://github.com/PyCQA/mccabe
+mccabe
+
+# For proper import sorting
+# https://github.com/PyCQA/isort
+isort
+
+# Provide type hints for requests
+# https://github.com/python/typeshed
+types-requests
+
+# Used to send HTTP requests
+# https://pypi.org/project/requests/
+requests
+
+# Static Typing for Python
+# https://github.com/python/mypy
+mypy
+
+# Load environment variables from a .env file
+# https://pypi.org/project/python-dotenv/
+python-dotenv
+
+# * FOR DJANGO *
+mysqlclient
+
+django
+
+djangorestframework
+
+djoser
+
+django-filter
+
+django-livereload-server
+
+# * FOR CRYPTOGRAPHY *
+pycryptodome
+
+minio
+
+django-stubs
