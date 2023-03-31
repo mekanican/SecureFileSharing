@@ -1,0 +1,20 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+mysqlclient = "*"
+django = "*"
+djangorestframework = "*"
+djoser = "==2.1.0"
+django-filter = "*"
+isort = "*"
+pycryptodome = "*"
+django-livereload-server = "*"
+minio = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.11"

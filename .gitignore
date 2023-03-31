@@ -109,5 +109,3 @@ dist
 
 # Minio storage
 FileStorage/minio/*
-
-.mypy_cache/
