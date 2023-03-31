@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   code-style:
     runs-on: ubuntu-latest
