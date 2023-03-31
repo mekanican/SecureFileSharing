@@ -1,0 +1,33 @@
+# https://docs.github.com/en/actions/quickstart
+
+name: Check codes for backend before merging to main branch
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+jobs:
+  code-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+      - name: Setting up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+        python-version: "3.11"
+      - name: Installing dependencies
+        run: |
+          pip install --requirement Backend/requirements/development.txt
+      - name: Running coding styles check
+        run: |
+          ./Backend/check_coding_styles.sh
