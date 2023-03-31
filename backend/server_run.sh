@@ -5,7 +5,9 @@ pip install --upgrade pip
 pip install -r requirements/development.txt
 
 # Start the first process
-python ./SFS/manage.py livereload &
+
+python ./sfs/manage.py livereload &
 
 # Start the second process
-python ./SFS/manage.py runserver
+python ./sfs/manage.py runserver
+
