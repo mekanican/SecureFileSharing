@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "livereload",
     "apps.file_sharing",
     "apps.users",
+    "apps.email_otp",
+    "apps.keys_handler",
 ]
 
 MIDDLEWARE = [
