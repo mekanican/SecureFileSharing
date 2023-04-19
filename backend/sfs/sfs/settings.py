@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "livereload",
-    "file_sharing",
+    "apps.file_sharing",
+    "apps.users",
 ]
 
 MIDDLEWARE = [
