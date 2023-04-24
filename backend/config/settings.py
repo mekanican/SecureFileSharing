@@ -39,10 +39,12 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "livereload",
+    "django_extensions",
     "apps.file_sharing",
     "apps.users",
     "apps.email_otp",
     "apps.keys_handler",
+    "apps.keys_handler.prime_numbers_handler.prime_numbers_generator,"
 ]
 
 MIDDLEWARE = [
@@ -56,7 +58,7 @@ MIDDLEWARE = [
     "livereload.middleware.LiveReloadScript",
 ]
 
-ROOT_URLCONF = "sfs.urls"
+ROOT_URLCONF = "urls.urls"
 
 TEMPLATES = [
     {
@@ -74,7 +76,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "sfs.wsgi.application"
+WSGI_APPLICATION = "config.wsgi.application"
 
 
 # Database
