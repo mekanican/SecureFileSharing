@@ -12,15 +12,15 @@
   // Improve brackets displaying
   "editor.bracketPairColorization.enabled": true,
 
-  // Disable pylance type checking because I want to use mypy for this
+  // Disable pylance type checking because I want to use pylint for this
   "python.analysis.typeCheckingMode": "off",
 
   // Display inline hints for types of returned values
   "python.analysis.inlayHints.functionReturnTypes": true,
 
-  // Enable linting with flake8 and mypy
+  // Enable linting with flake8 and pylint
   "python.linting.flake8Enabled": true,
-  "python.linting.mypyEnabled": true,
+  "python.linting.pylintEnabled": true,
 
   // Enable automatic imports formatting after saving
   "[python]": {
@@ -35,7 +35,7 @@
 
   // Enable automatic insertion of final newline
   "files.insertFinalNewline": true,
- 
+
     // Exclude __pycache__ from explorer
     "files.exclude": {
         "**/__pycache__": true
@@ -49,15 +49,20 @@
     // Improve brackets displaying
     "editor.bracketPairColorization.enabled": true,
 
-    // Disable pylance type checking because I want to use mypy for this
+    // Disable pylance type checking because I want to use pylint for this
     "python.analysis.typeCheckingMode": "off",
 
     // Display inline hints for types of returned values
     "python.analysis.inlayHints.functionReturnTypes": true,
 
-    // Enable linting with flake8 and mypy
+    // Enable linting with flake8 and pylint
     "python.linting.flake8Enabled": true,
-    "python.linting.mypyEnabled": true,
+    "python.linting.pylintEnabled": true,
+
+    // Disale pylint check for docstring
+    "python.linting.pylintArgs": [
+        "--disable=C0114,C0115,C0116"
+    ],
 
     // Enable automatic imports formatting after saving
     "[python]": {
@@ -71,4 +76,7 @@
     "editor.trimAutoWhitespace": true,
     "diffEditor.ignoreTrimWhitespace": false,
     "files.insertFinalNewline": true,
+    "cSpell.words": [
+        "primality"
+    ],
 }

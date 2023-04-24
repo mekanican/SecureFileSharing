@@ -1,4 +1,4 @@
-pyenv activate secure-file-sharing-server
+# pyenv activate secure-file-sharing-server
 
 # pip install --upgrade pip
 
@@ -11,6 +11,6 @@ python ./sfs/manage.py makemigrations
 
 python ./sfs/manage.py migrate
 
-# Start the second process
-python ./sfs/manage.py runserver
+# Run server on port 8090
+python ./sfs/manage.py runserver 8090
 
