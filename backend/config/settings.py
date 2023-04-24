@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.email_otp",
     "apps.keys_handler",
-    "apps.keys_handler.prime_numbers_handler.prime_numbers_generator,"
+    # "apps.keys_handler.prime_numbers_handler.prime_numbers_generator,"
 ]
 
 MIDDLEWARE = [
