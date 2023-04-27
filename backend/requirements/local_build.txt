@@ -1,0 +1,5 @@
+# http://www.pyinvoke.org/
+invoke
+
+# https://rich.readthedocs.io/en/stable/introduction.html
+rich
