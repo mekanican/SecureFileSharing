@@ -7,10 +7,10 @@
 # Start the first process
 # python ./sfs/manage.py livereload &
 
-python ./sfs/manage.py makemigrations
+python ./manage.py makemigrations
 
-python ./sfs/manage.py migrate
+python ./manage.py migrate
 
 # Run server on port 8090
-python ./sfs/manage.py runserver 8090
+python ./manage.py runserver 8090
 
