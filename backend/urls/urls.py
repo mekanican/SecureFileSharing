@@ -23,5 +23,5 @@ from django.urls import include, path
 
  
 urlpatterns = [ 
-    path('api/auth_user/', include('apps.users.urls')),
+    path('api/email_otp/', include('apps.email_otp.urls')),
 ]
