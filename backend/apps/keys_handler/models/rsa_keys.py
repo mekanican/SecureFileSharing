@@ -4,7 +4,10 @@ import json
 from apps.keys_handler.prime_numbers_handler.prime_numbers_generator import (
     generate_large_prime_number,
 )
+from django.contrib.auth import get_user_model
 from django.db import models
+
+User = get_user_model()
 
 
 class RSAPrivateKey(models.Model):
@@ -35,6 +38,11 @@ class RSAPublicKey(models.Model):
     p: models.BigIntegerField = models.BigIntegerField()
     q: models.BigIntegerField = models.BigIntegerField()
     d: models.BigIntegerField = models.BigIntegerField()
+
+    user: User = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+    )
 
     def generate_keys(self):
         """Generate RSA keys.
