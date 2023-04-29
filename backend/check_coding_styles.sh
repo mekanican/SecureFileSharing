@@ -2,4 +2,4 @@ set -xe
 isort .
 
 # pylint ignore type hints
-pylint ./apps/
+pylint ./apps/ --ignore=types
