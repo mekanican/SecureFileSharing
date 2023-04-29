@@ -87,3 +87,54 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
     ]
 }
 ```
+
+# User Login API
+This API allows user to login using their `username` and `password`.
+## API Endpoint
+`POST /user/login/`
+## Request Header
+`HTTP/1.1`
+`Content-Type: application/json`
+## Request Body
+| Field | Type | Description |
+| ----- | ---- | ----------- |
+| username | string | Username of the user |
+| password | string | Password of the user |
+## Response
+If the request is successful, the API will return the following response:
+```json
+{
+    "token": <auth-token>
+}
+```
+with the status code `200 OK`.  
+If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
+## Example
+### Successful request
+#### Request
+```json
+{
+    "username": "johndoe1",
+    "password": "passwordaaaaa"
+}
+```
+#### Response
+```json
+{
+    "token": "207b9f098a3a77e7be0c383bb932fccd47dc291c"
+}
+```
+### Failed request
+#### Request
+```json
+{
+    "username": "johndoe1",
+    "password": "passwordaaaaa"
+}
+```
+#### Response
+```json
+{
+    "error": "Invalid credentials"
+}
+```
