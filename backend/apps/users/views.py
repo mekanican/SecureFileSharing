@@ -1,3 +1,4 @@
+# pylint: disable=no-member,broad-exception-caught
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -41,3 +42,21 @@ class UserLoginView(APIView):
             {"error": "Invalid credentials"},
             status=status.HTTP_400_BAD_REQUEST,
         )
+
+
+class UserLogoutView(APIView):
+    """API view for user logout."""
+
+    def get(self, request) -> Response:
+        try:
+            # get the token from the url
+            token_key = request.query_params.get("token")
+
+            # delete the token
+            Token.objects.get(key=token_key).delete()
+
+            # return success response
+            return Response(status=status.HTTP_200_OK)
+        except Exception:
+            # return error response
+            return Response(status=status.HTTP_400_BAD_REQUEST)

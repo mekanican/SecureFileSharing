@@ -1,7 +1,7 @@
 # User Register API
 This API allows user to register using their `username`, `password`, and `email`.  
 ## API Endpoint
-`POST /user/register/`
+`POST /api/user/register/`
 ## Request Header
 `HTTP/1.1`  
 `Content-Type: application/json`
@@ -91,7 +91,7 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 # User Login API
 This API allows user to login using their `username` and `password`.
 ## API Endpoint
-`POST /user/login/`
+`POST /api/user/login/`
 ## Request Header
 `HTTP/1.1`
 `Content-Type: application/json`
@@ -138,3 +138,17 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
     "error": "Invalid credentials"
 }
 ```
+
+# User Logout API
+This API allows user to logout.
+## API Endpoint
+`GET /api/user/logout?token=<auth-token>`
+## Request Header
+`HTTP/1.1`
+`Content-Type: application/json`
+
+## Response
+If the request is successful, the API will return a `200 OK` response.  
+If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
+## Example
+`/api/user/logout?token=207b9f098a3a77e7be0c383bb932fccd47dc291c`

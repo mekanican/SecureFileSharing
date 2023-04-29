@@ -38,5 +38,5 @@ urlpatterns = [
         name="token_refresh",
     ),
     path("api/token/verify/", TokenVerifyView.as_view(), name="token_verify"),
-    path("user/", include("apps.users.urls")),
+    path("api/user/", include("apps.users.urls")),
 ]
