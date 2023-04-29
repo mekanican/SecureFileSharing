@@ -42,6 +42,7 @@ class RSAPublicKey(models.Model):
     user: User = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
+        null=True,
     )
 
     def generate_keys(self):
