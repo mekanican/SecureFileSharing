@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "rest_framework_simplejwt",
     "rest_framework",
+    "rest_framework.authtoken",
     "apps.file_sharing",
     "apps.users",
     "apps.email_otp",
