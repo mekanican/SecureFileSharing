@@ -1,4 +1,4 @@
-# pylint: disable=wrong-import-order
+# pylint: disable=wrong-import-order,no-member,invalid-name
 import math
 import random
 
@@ -45,7 +45,7 @@ class RSAKeyGenerateView(APIView):
             private_key_serializer.is_valid()
         ):
             public_key_serializer.save()
-            private_key_serializer.save()
+            # private_key_serializer.save()
             return Response(
                 {
                     "message": "Keys generated successfully",

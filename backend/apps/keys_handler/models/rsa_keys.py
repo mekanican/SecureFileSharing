@@ -13,8 +13,8 @@ User = get_user_model()
 class RSAPublicKey(models.Model):
     """Model for RSA private key."""
 
-    n: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
-    e: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
+    n: models.CharField = models.CharField(max_length=310)
+    e: models.CharField = models.CharField(max_length=310)
 
     user: User = models.ForeignKey(
         User,
@@ -41,9 +41,9 @@ class RSAPublicKey(models.Model):
 class RSAPrivateKey(models.Model):
     """Model for RSA public key."""
 
-    p: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
-    q: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
-    d: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
+    p: models.CharField = models.CharField(max_length=310)  # 2^1024 ~ 10^309
+    q: models.CharField = models.CharField(max_length=310)
+    d: models.CharField = models.CharField(max_length=310)
 
     user: User = models.ForeignKey(
         User,
