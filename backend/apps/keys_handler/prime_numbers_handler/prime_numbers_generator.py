@@ -5,7 +5,7 @@ from apps.keys_handler.prime_numbers_handler.prime_numbers_checker import (
     is_prime,
 )
 
-LENGTH_OF_PRIME_IN_BITS = 1024
+LENGTH_OF_PRIME_IN_BITS = 30
 
 
 def generate_large_prime_number():

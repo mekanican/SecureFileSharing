@@ -10,11 +10,17 @@ from django.db import models
 User = get_user_model()
 
 
-class RSAPrivateKey(models.Model):
+class RSAPublicKey(models.Model):
     """Model for RSA private key."""
 
-    n: models.BigIntegerField = models.BigIntegerField()
-    e: models.BigIntegerField = models.BigIntegerField()
+    n: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
+    e: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
+
+    user: User = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+    )
 
     def set_n(self, n):
         """Set n."""
@@ -32,12 +38,12 @@ class RSAPrivateKey(models.Model):
         })
 
 
-class RSAPublicKey(models.Model):
+class RSAPrivateKey(models.Model):
     """Model for RSA public key."""
 
-    p: models.BigIntegerField = models.BigIntegerField()
-    q: models.BigIntegerField = models.BigIntegerField()
-    d: models.BigIntegerField = models.BigIntegerField()
+    p: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
+    q: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
+    d: models.PositiveBigIntegerField = models.PositiveBigIntegerField()
 
     user: User = models.ForeignKey(
         User,
@@ -55,4 +61,4 @@ class RSAPublicKey(models.Model):
         p = generate_large_prime_number()
         q = generate_large_prime_number()
 
-        print(p, q)
+        return p, q
