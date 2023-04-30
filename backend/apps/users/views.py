@@ -1,3 +1,4 @@
+
 # pylint: disable=no-member,broad-exception-caught
 from django.contrib.auth import authenticate
 from rest_framework import status
@@ -60,3 +61,4 @@ class UserLogoutView(APIView):
         except Exception:
             # return error response
             return Response(status=status.HTTP_400_BAD_REQUEST)
+

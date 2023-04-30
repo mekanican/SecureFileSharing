@@ -103,3 +103,7 @@ services:
 volumes:
   # node_modules_volume:
   mysql_volume:
+
+networks:
+  mysql_database:
+    driver:bridge
