@@ -40,11 +40,13 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "livereload",
     "django_extensions",
+    "rest_framework_simplejwt",
+    "rest_framework",
+    "rest_framework.authtoken",
     "apps.file_sharing",
     "apps.users",
     "apps.email_otp",
     "apps.keys_handler",
-    # "apps.keys_handler.prime_numbers_handler.prime_numbers_generator,"
 ]
 
 MIDDLEWARE = [
@@ -106,6 +108,9 @@ AUTH_PASSWORD_VALIDATORS = [  # noqa: E501
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",  # noqa: E501
+        "OPTIONS": {
+            "min_length": 8,
+        },  # noqa: E501
     },
     {
         "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",  # noqa: E501
@@ -139,3 +144,11 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
