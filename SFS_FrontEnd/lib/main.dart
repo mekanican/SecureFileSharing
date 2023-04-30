@@ -1,13 +1,5 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_login/flutter_login.dart';
 
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -18,6 +10,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:sfs_frontend/pages/chat.dart';
+import 'package:sfs_frontend/pages/home.dart';
+import 'package:sfs_frontend/pages/friend.dart';
+import 'package:sfs_frontend/pages/login.dart';
+
 
 const END_POINT = "http://192.168.10.1:8090"; //Fix error here
 void main() {
@@ -125,6 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 }
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -264,3 +263,4 @@ class _ChatPageState extends State<ChatPage> {
     }
   }
 }
+
