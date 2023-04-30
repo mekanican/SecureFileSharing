@@ -4,14 +4,23 @@ import json
 from apps.keys_handler.prime_numbers_handler.prime_numbers_generator import (
     generate_large_prime_number,
 )
+from django.contrib.auth import get_user_model
 from django.db import models
 
+User = get_user_model()
 
-class RSAPrivateKey(models.Model):
+
+class RSAPublicKey(models.Model):
     """Model for RSA private key."""
 
-    n: models.BigIntegerField = models.BigIntegerField()
-    e: models.BigIntegerField = models.BigIntegerField()
+    n: models.CharField = models.CharField(max_length=310)
+    e: models.CharField = models.CharField(max_length=310)
+
+    user: User = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+    )
 
     def set_n(self, n):
         """Set n."""
@@ -29,12 +38,18 @@ class RSAPrivateKey(models.Model):
         })
 
 
-class RSAPublicKey(models.Model):
+class RSAPrivateKey(models.Model):
     """Model for RSA public key."""
 
-    p: models.BigIntegerField = models.BigIntegerField()
-    q: models.BigIntegerField = models.BigIntegerField()
-    d: models.BigIntegerField = models.BigIntegerField()
+    p: models.CharField = models.CharField(max_length=310)  # 2^1024 ~ 10^309
+    q: models.CharField = models.CharField(max_length=310)
+    d: models.CharField = models.CharField(max_length=310)
+
+    user: User = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        null=True,
+    )
 
     def generate_keys(self):
         """Generate RSA keys.
@@ -46,4 +61,4 @@ class RSAPublicKey(models.Model):
         p = generate_large_prime_number()
         q = generate_large_prime_number()
 
-        print(p, q)
+        return p, q
