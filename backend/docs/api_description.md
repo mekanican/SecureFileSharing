@@ -152,3 +152,10 @@ If the request is successful, the API will return a `200 OK` response.
 If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
 ## Example
 `/api/user/logout?token=207b9f098a3a77e7be0c383bb932fccd47dc291c`
+
+# Key Generating API
+## API Endpoint
+`GET /api/keys/generate/?token=<token>`
+
+## Example
+`/api/keys/generate/?token=6ef59d81bd7c499658ec25b9f030077e352bb235`
