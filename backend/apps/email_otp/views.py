@@ -13,6 +13,8 @@ from rest_framework.decorators import api_view
 from django.template.loader import render_to_string
 from pathlib import Path
 
+
+
 @api_view(['GET', 'POST'])
 def test(request):
     print(JSONParser().parse(request));
@@ -21,10 +23,11 @@ def test(request):
 @api_view(['POST'])
 def sendEmail(request):
     receiverParsing=JSONParser().parse(request);
-    
+    link ="";
     email=receiverParsing.get("email");
-    msg_html = render_to_string('email_template.html', {'email': email})
-    print(email)
+    msg_html = render_to_string('email_template.html', {'email': email,'link':link})
+    print(email);
+  
     send_mail(
         "Secure File Sharing verify mail",
         message="",
@@ -33,8 +36,13 @@ def sendEmail(request):
         fail_silently=False,
         html_message=msg_html,
     )
+    print("sent");
     return JsonResponse({'message': 'suceed'}, status=status.HTTP_200_OK) 
-    
+
+@api_view(['GET'])
+def verifyAccount(request):
+
+    return JsonResponse({'message': 'suceed'}, status=status.HTTP_200_OK) 
 
      # GET / PUT / DELETE tutorial
     

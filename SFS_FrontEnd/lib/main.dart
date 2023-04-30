@@ -17,7 +17,9 @@ import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:http/http.dart' as http;
 
+const END_POINT = "http://192.168.10.1:8090"; //Fix error here
 void main() {
   runApp(const MyApp());
 }
@@ -66,13 +68,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  var selectedIndex = 0;  
+  var selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-
     Widget page;
-    switch(selectedIndex) {
+    switch (selectedIndex) {
       case 0:
         page = HomePage();
         break;
@@ -89,29 +90,28 @@ class _MyHomePageState extends State<MyHomePage> {
         throw UnimplementedError("Not found");
     }
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Scaffold(
-          body: Row(
-            children: [
-              getHorizontalNavigationBar(constraints),
-              Expanded(child: Container(
-                color: Colors.white,
-                child: page
-              ))
-            ],
-          ),
-        );
-      }
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      return Scaffold(
+        body: Row(
+          children: [
+            getHorizontalNavigationBar(constraints),
+            Expanded(child: Container(color: Colors.white, child: page))
+          ],
+        ),
+      );
+    });
   }
-  
+
   SafeArea getHorizontalNavigationBar(BoxConstraints constraints) {
-    return SafeArea(child: NavigationRail(
+    return SafeArea(
+        child: NavigationRail(
       destinations: const [
         NavigationRailDestination(icon: Icon(Icons.home), label: Text("Home")),
-        NavigationRailDestination(icon: Icon(Icons.login), label: Text("Login")),
-        NavigationRailDestination(icon: Icon(Icons.supervised_user_circle), label: Text("List of friends")),
+        NavigationRailDestination(
+            icon: Icon(Icons.login), label: Text("Login")),
+        NavigationRailDestination(
+            icon: Icon(Icons.supervised_user_circle),
+            label: Text("List of friends")),
         NavigationRailDestination(icon: Icon(Icons.chat), label: Text("Chat")),
       ],
       selectedIndex: selectedIndex,
@@ -122,10 +122,8 @@ class _MyHomePageState extends State<MyHomePage> {
       },
       extended: constraints.maxWidth >= 700,
       backgroundColor: Colors.lime.shade300,
-      )
-    );
+    ));
   }
-  
 }
 
 class HomePage extends StatelessWidget {
@@ -136,9 +134,7 @@ class HomePage extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image(image: AssetImage("logo/logo_full.png"))
-        ],
+        children: [Image(image: AssetImage("logo/logo_full.png"))],
       ),
     );
   }
@@ -147,14 +143,44 @@ class HomePage extends StatelessWidget {
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
+  Future<String> fetchRegister(email) async {
+    try {
+      final response = await http.post(
+          Uri.parse(END_POINT + '/api/email_otp/sendMail'),
+          headers: {
+            "Content-type": "application/json",
+            "Accept": "application/json"
+          },
+          body: jsonEncode({"email": email.toString()}));
+
+      if (response.statusCode == 200) {
+        // If the server did return a 200 OK response,
+        // then parse the JSON.
+        print("OK");
+        return jsonDecode(response.body)['message'];
+      } else {
+        // If the server did not return a 200 OK response,
+        // then throw an exception.
+        return "try again";
+      }
+    } catch (e) {
+      print(e);
+
+      return "none";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
-      onLogin: (_){}, 
-      onRecoverPassword: (_){},
-      onSignup: (_){},
+      onLogin: (_) {},
+      onRecoverPassword: (_) {},
+      onSignup: (_) async {
+        print(await fetchRegister(_.name));
+        print(_.password);
+      },
       logo: AssetImage("logo/logo_icon.png"),
-      );
+    );
   }
 }
 
@@ -175,13 +201,11 @@ class _FriendListPageState extends State<FriendListPage> {
   }
 }
 
-
 class ChatPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
     return _ChatPageState();
   }
-
 }
 
 class _ChatPageState extends State<ChatPage> {
@@ -189,13 +213,13 @@ class _ChatPageState extends State<ChatPage> {
   final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: Chat(
+        body: Chat(
           messages: _messages,
           onSendPressed: _handleSendPressed,
           onAttachmentPressed: _handleFileSelection,
           user: _user,
-    ),
-  );
+        ),
+      );
 
   void _handleSendPressed(types.PartialText message) {
     final textMessage = types.TextMessage(
@@ -206,14 +230,14 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     _addMessage(textMessage);
-    
   }
+
   String randomString() {
     final random = Random.secure();
     final values = List<int>.generate(16, (i) => random.nextInt(255));
     return base64UrlEncode(values);
   }
-  
+
   void _addMessage(types.Message textMessage) {
     setState(() {
       _messages.insert(0, textMessage);
