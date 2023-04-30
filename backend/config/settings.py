@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 # pylint: disable=line-too-long
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -58,6 +58,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "livereload.middleware.LiveReloadScript",
+   
 ]
 
 ROOT_URLCONF = "urls.urls"
@@ -65,7 +66,7 @@ ROOT_URLCONF = "urls.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [os.path.join(BASE_DIR, '/apps/email_otp/templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -145,6 +146,7 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.BasicAuthentication",
@@ -152,3 +154,12 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'securefilesharingsp@gmail.com'
+EMAIL_HOST_PASSWORD = 'pajprkhfefrplgin' #past the key or password app here
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "securefilesharingsp@gmail.com"
+
