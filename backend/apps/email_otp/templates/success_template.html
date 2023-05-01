@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Email Verification Success</title>
+    <style>
+      body {
+        background-color: #f5f5f5;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        margin: 50px auto;
+        max-width: 600px;
+        padding: 50px;
+        text-align: center;
+      }
+      .logo {
+        display: block;
+        margin: 0 auto;
+        max-width: 200px;
+      }
+      .success-icon {
+        animation: rotate 2s infinite linear;
+        color: #30c59b;
+        font-size: 50px;
+        margin-bottom: 20px;
+      }
+      .success-message {
+        color: #30c59b;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+      }
+      .bounce {
+        animation: bounce 1s infinite;
+        transform-origin: center bottom;
+      }
+      @keyframes rotate {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes bounce {
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+          transform: translateY(0);
+        }
+        40% {
+          transform: translateY(-20px);
+        }
+        60% {
+          transform: translateY(-10px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <img
+        src="https://ik.imagekit.io/ejrhi5xce/Logo/logo_icon.png?updatedAt=1682707520274"
+        alt="Logo"
+        class="logo"
+      />
+      <div class="success-icon bounce">&#10003;</div>
+      <div class="success-message">Email Verification Success</div>
+      <p>
+        Your email has been successfully verified. Thank you for verifying your
+        email address.
+      </p>
+    </div>
+  </body>
+</html>

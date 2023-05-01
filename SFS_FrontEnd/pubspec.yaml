@@ -42,9 +42,13 @@ dependencies:
   uuid: ^3.0.7
   path_provider: ^2.0.14
   infinite_scroll_pagination: ^3.2.0
+
+  http: ^0.13.5
+
   encrypt: ^5.0.1
   dio: ^5.1.1
   provider: ^6.0.5
+
 
 dev_dependencies:
   flutter_test:
