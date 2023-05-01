@@ -1,0 +1,72 @@
+<style>
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  #removeButton {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  #removeButton:hover {
+    background-color: #d32f2f;
+  }
+
+  #removeButton:active {
+    background-color: #b71c1c;
+  }
+</style>
+<script>
+  function removeFile(file_name, url) {
+    // Send a POST request to the server
+    var xhr = new XMLHttpRequest()
+    xhr.open('POST', '{{urlRemove}}', true)
+
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8')
+    xhr.setRequestHeader(
+      'X-CSRFToken',
+      document.getElementsByName('csrfmiddlewaretoken')[0].value,
+    )
+    xhr.send(JSON.stringify({ file_name: file_name, url: url }))
+  }
+</script>
+
+<div>
+  {% block content %}
+  <form method="post" enctype="multipart/form-data">
+    <input type="file" name="myfile" />
+    <button type="submit">Upload</button>
+  </form>
+
+  <p>Uploaded files:</p>
+  <ul>
+    {% for obj in files %}
+    <li>
+      <a href="{{obj.url}}">{{obj.file_name}}</a>
+      <small>(Uploaded at: {{ obj.uploaded_at }})</small>
+      <button
+        id="removeButton"
+        onclick="removeFile('{{obj.file_name}}','{{obj.url}}' )"
+      >
+        Delete
+      </button>
+
+      {% csrf_token %}
+    </li>
+    {% endfor %}
+  </ul>
+  {% endblock %}
+</div>

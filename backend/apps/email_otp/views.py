@@ -6,7 +6,7 @@ from django.http.response import JsonResponse
 from rest_framework.parsers import JSONParser 
 from rest_framework import status
 from rest_framework.views import APIView
-from apps.email_otp.models import Email_otp
+from apps.email_otp.models import EmailOTP
 from apps.email_otp.serializers import email_otpSerializer
 from django.core.mail import send_mail
 from rest_framework.decorators import api_view
@@ -15,7 +15,7 @@ from pathlib import Path
 import jwt
 from datetime import datetime, timedelta
 from rest_framework.response import Response
-from .models import Email_otp
+from .models import EmailOTP
 from django.shortcuts import render
 
 secret_key = 'mysecretkey'
@@ -56,7 +56,7 @@ class VerifyEmailHandler(APIView):
             token = parsing.GET.get("token");
             
             payload= jwt.decode(token, secret_key,algorithms=[algorithm])
-            q1=Email_otp.objects.get(id=payload.get('user_id'),email=payload.get('email'));
+            q1=EmailOTP.objects.get(id=payload.get('user_id'),email=payload.get('email'));
            # q2=q1.exclude(date_verify__gte=datetime.date.today());
             #q1.date_verify.set(datetime.date.today());
             print(q1.date_verify);
