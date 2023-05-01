@@ -1,11 +1,11 @@
 #!/bin/sh
 
 # Start the first process
-python ./SFS/manage.py livereload &
+python ./manage.py livereload &
 
   
 # Start the second process
-python ./SFS/manage.py runserver localhost:6969 & 
+python ./manage.py runserver localhost:6969 & 
   
 # Wait for any process to exit
 wait -n
