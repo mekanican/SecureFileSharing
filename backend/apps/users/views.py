@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from .serializers import UserSerializer
 
-from ..email_otp.models import Email_otp
+from ..email_otp.models import EmailOTP
 from ..email_otp.views import SendEmailHandler
 
 from django.contrib.auth import get_user_model
@@ -22,7 +22,7 @@ class UserRegisterView(APIView):
         serializer = UserSerializer(data=cloneRequest.data)
         if serializer.is_valid():
             user = serializer.save()
-            email_otp = Email_otp(id=user.id,email=user.email);
+            email_otp = EmailOTP(id=user.id,email=user.email);
             email_otp.save();
             SendEmailHandler.SendMail(cloneRequest,user)
             return Response(
@@ -44,7 +44,7 @@ class UserLoginView(APIView):
         user = authenticate(username=username, password=password)
 
         q1=User.objects.get(username=user);
-        email_otp = Email_otp.objects.get(id=q1.id,email=q1.email);
+        email_otp = EmailOTP.objects.get(id=q1.id,email=q1.email);
         print(email_otp.date_verify)
 
         if user and email_otp.date_verify :

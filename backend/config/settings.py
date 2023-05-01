@@ -50,6 +50,11 @@ INSTALLED_APPS = [
    
 ]
 
+FILE_UPLOAD_HANDLERS= [
+     
+    "django.core.files.uploadhandler.MemoryFileUploadHandler",
+    "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -59,7 +64,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "livereload.middleware.LiveReloadScript",
-   
 ]
 
 ROOT_URLCONF = "urls.urls"
@@ -67,7 +71,7 @@ ROOT_URLCONF = "urls.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, '/apps/email_otp/templates')],
+        "DIRS": [os.path.join(BASE_DIR, '/apps/email_otp/templates'),os.path.join(BASE_DIR, '/apps/file_sharing/templates')],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
