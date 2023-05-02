@@ -61,4 +61,11 @@ class UserController {
     }
     return error;
   }
+
+
+  Future<String?> dummySignIn(_) async {
+    userState.login("abc", "xyz");
+    return null;
+  }
+
 }
