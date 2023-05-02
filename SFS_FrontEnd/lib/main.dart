@@ -126,34 +126,3 @@ class _MyHomePageState extends State<MyHomePage> {
     ));
   }
 }
-
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [Image(image: AssetImage("logo/logo_full.png"))],
-      ),
-    );
-  }
-}
-
-class FriendListPage extends StatefulWidget {
-  const FriendListPage({super.key});
-
-  @override
-  State<StatefulWidget> createState() {
-    return _FriendListPageState();
-  }
-}
-
-class _FriendListPageState extends State<FriendListPage> {
-  static const _pageSize = 20;
-  @override
-  Widget build(BuildContext context) {
-    throw UnimplementedError();
-  }
-}
