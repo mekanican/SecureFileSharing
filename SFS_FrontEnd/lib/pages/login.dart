@@ -47,6 +47,9 @@ class LoginPage extends StatelessWidget {
         )
       ],
       userValidator: (_) => null,
+      onSubmitAnimationCompleted:() {
+        print("Logged ${userState.getUsername()} in successfully");
+      },
       );
   }
 }
