@@ -1,30 +1,29 @@
 
 # pylint: disable=no-member,broad-exception-caught
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import UserSerializer
-
 from ..email_otp.models import EmailOTP
 from ..email_otp.views import SendEmailHandler
-
-from django.contrib.auth import get_user_model
+from .serializers import UserSerializer
 
 User = get_user_model()
+
+
 class UserRegisterView(APIView):
     """API view to register a new user."""
 
     def post(self, request) -> Response:
-        cloneRequest=request;
+        cloneRequest = request
         serializer = UserSerializer(data=cloneRequest.data)
         if serializer.is_valid():
             user = serializer.save()
-            email_otp = EmailOTP(id=user.id,email=user.email);
-            email_otp.save();
-            SendEmailHandler.SendMail(cloneRequest,user)
+            email_otp = EmailOTP(id=user.id, email=user.email)
+            email_otp.save()
+            SendEmailHandler.SendMail(cloneRequest, user)
             return Response(
                 {"user_id": user.id},
                 status=status.HTTP_201_CREATED,
@@ -43,11 +42,17 @@ class UserLoginView(APIView):
         password = request.data.get("password")
         user = authenticate(username=username, password=password)
 
-        q1=User.objects.get(username=user);
-        email_otp = EmailOTP.objects.get(id=q1.id,email=q1.email);
-        print(email_otp.date_verify)
+        try:
+            q1 = User.objects.get(username=user)
+            email_otp = EmailOTP.objects.get(id=q1.id, email=q1.email)
+            # print(email_otp.date_verify)
+        except User.DoesNotExist:
+            return Response(
+                {"error": "Invalid username"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        if user and email_otp.date_verify :
+        if user and email_otp.date_verify:
             token, _ = Token.objects.get_or_create(user=user)
             return Response(
                 {"token": token.key},
@@ -75,4 +80,3 @@ class UserLogoutView(APIView):
         except Exception:
             # return error response
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
