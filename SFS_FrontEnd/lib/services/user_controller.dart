@@ -14,7 +14,7 @@ class UserController {
   Future<String?> signUp(SignupData sData) async {
     var dio = Dio(baseOptions);
 
-    var response = await dio.post("/user/register", data: {
+    var response = await dio.post("/user/register/", data: {
       'username': sData.name ?? '',
       'password': sData.password ?? '',
       'email': sData.additionalSignupData?["email"] ?? '',
@@ -39,7 +39,7 @@ class UserController {
   Future<String?> signIn(LoginData sData) async {
     var dio = Dio(baseOptions);
 
-    var response = await dio.post("/user/login", data: {
+    var response = await dio.post("/user/login/", data: {
       'username': sData.name,
       'password': sData.password,
     });
