@@ -42,5 +42,7 @@ urlpatterns = [
     path("api/user/", include("apps.users.urls")),
     path("api/keys/", include("apps.keys_handler.urls"),),
     path('api/email_otp/', include('apps.email_otp.urls')),
+    path('api/fileSharing/', include('apps.file_sharing.urls')),
+
 
 ]
