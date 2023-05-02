@@ -111,3 +111,4 @@ dist
 FileStorage/minio/*
 
 .mypy_cache/
+backend/Pipfile
