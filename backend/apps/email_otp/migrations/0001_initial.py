@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Email_otp',
+            name='EmailOTP',
             fields=[
                 ('id', models.BigAutoField(primary_key=True, serialize=False, unique=True)),
                 ('email', models.CharField(max_length=254)),
