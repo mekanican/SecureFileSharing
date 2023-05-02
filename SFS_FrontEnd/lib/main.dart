@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'package:provider/provider.dart';
+
+
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
@@ -15,9 +18,8 @@ import 'package:sfs_frontend/pages/chat.dart';
 import 'package:sfs_frontend/pages/home.dart';
 import 'package:sfs_frontend/pages/friend.dart';
 import 'package:sfs_frontend/pages/login.dart';
+import 'package:sfs_frontend/services/user_state.dart';
 
-
-const END_POINT = "http://192.168.10.1:8090"; //Fix error here
 void main() {
   runApp(const MyApp());
 }
@@ -28,21 +30,24 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'SFS',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.teal,
+    return ChangeNotifierProvider(
+      create: (context) => UserState(),
+      child: MaterialApp(
+        title: 'SFS',
+        theme: ThemeData(
+          // This is the theme of your application.
+          //
+          // Try running your application with "flutter run". You'll see the
+          // application has a blue toolbar. Then, without quitting the app, try
+          // changing the primarySwatch below to Colors.green and then invoke
+          // "hot reload" (press "r" in the console where you ran "flutter run",
+          // or simply save your changes to "hot reload" in a Flutter IDE).
+          // Notice that the counter didn't reset back to zero; the application
+          // is not restarted.
+          primarySwatch: Colors.teal,
+        ),
+        home: const MyHomePage(title: 'Flutter Demo Home Page'),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
   }
 }
@@ -142,41 +147,14 @@ class HomePage extends StatelessWidget {
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
-  Future<String> fetchRegister(email) async {
-    try {
-      final response = await http.post(
-          Uri.parse(END_POINT + '/api/email_otp/sendMail'),
-          headers: {
-            "Content-type": "application/json",
-            "Accept": "application/json"
-          },
-          body: jsonEncode({"email": email.toString()}));
-
-      if (response.statusCode == 200) {
-        // If the server did return a 200 OK response,
-        // then parse the JSON.
-        print("OK");
-        return jsonDecode(response.body)['message'];
-      } else {
-        // If the server did not return a 200 OK response,
-        // then throw an exception.
-        return "try again";
-      }
-    } catch (e) {
-      print(e);
-
-      return "none";
-    }
-  }
-
+ 
   @override
   Widget build(BuildContext context) {
     return FlutterLogin(
       onLogin: (_) {},
       onRecoverPassword: (_) {},
-      onSignup: (_) async {
-        print(await fetchRegister(_.name));
-        print(_.password);
+      onSignup: (_)  {
+      
       },
       logo: AssetImage("logo/logo_icon.png"),
     );
