@@ -8,7 +8,9 @@ services:
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=root 
-      - MYSQL_DATABASE=db_test
+      - MYSQL_DATABASE=file_sharing
+      - MYSQL_USER=file_sharing
+      - MYSQL_PASSWORD=file_sharing
     volumes:
       - ./DB/schema.sql:/docker-entrypoint-initdb.d/1.sql
       - ./DB/data.sql:/docker-entrypoint-initdb.d/2.sql
