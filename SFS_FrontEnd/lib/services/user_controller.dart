@@ -19,18 +19,25 @@ class UserController {
       'password': sData.password ?? '',
       'email': sData.additionalSignupData?["email"] ?? '',
     });
-    Map<String, dynamic> data = jsonDecode(response.data);
+    Map<String, dynamic> data = response.data;
     String? error;
 
     if (data.containsKey("password")) {
-      List<String> p = data["password"];
-      error = p[0];
+      error = "";
+      List<dynamic> p = data["password"];
+      for (String e in p) {
+        error = "${error!} $e";
+      }
     } else if(data.containsKey("username")) {
-      List<String> p = data["username"];
-      error = p[0];
+      error = "";
+      List<dynamic> p = data["username"];
+      for (String e in p) {
+        error = "${error!} $e";
+      }
     } else {
-      String userId = data["user_id"];
-      userState.login(sData.name ?? '', userId);
+      // String userId = data["user_id"];
+      // userState.login(sData.name ?? '', userId);
+      error = "Register successfully, please log in";
     }
 
     return error;
@@ -43,18 +50,14 @@ class UserController {
       'username': sData.name,
       'password': sData.password,
     });
-    Map<String, dynamic> data = jsonDecode(response.data);
+    Map<String, dynamic> data = response.data;
     String? error;
 
-    if (data.containsKey("password")) {
-      List<String> p = data["password"];
-      error = p[0];
-    } else if(data.containsKey("username")) {
-      List<String> p = data["username"];
-      error = p[0];
+    if (data.containsKey("error")) {
+      error = data["error"];
     } else {
-      String userId = data["user_id"];
-      userState.login(sData.name, userId);
+      String token = data["token"];
+      userState.login(sData.name, token);
     }
     return error;
   }
