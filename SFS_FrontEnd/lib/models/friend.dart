@@ -1,0 +1,15 @@
+class Friend {
+  final String id;
+  final String name;
+  final DateTime lastMessageAt;
+
+  Friend({
+    required this.id,
+    required this.name,
+    required this.lastMessageAt,
+  });
+
+  String toString() {
+    return 'Friend(id: $id, name: $name, lastMessageAt: $lastMessageAt)';
+  }
+}
