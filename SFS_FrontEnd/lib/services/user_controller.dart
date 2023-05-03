@@ -1,12 +1,10 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:sfs_frontend/helper/dio_option.dart';
 import 'package:sfs_frontend/services/user_state.dart';
 
 class UserController {
-
   final UserState userState;
 
   UserController(this.userState);
@@ -28,7 +26,7 @@ class UserController {
       for (String e in p) {
         error = "${error!} $e";
       }
-    } else if(data.containsKey("username")) {
+    } else if (data.containsKey("username")) {
       error = "";
       List<dynamic> p = data["username"];
       for (String e in p) {
@@ -62,10 +60,8 @@ class UserController {
     return error;
   }
 
-
   Future<String?> dummySignIn(_) async {
     userState.login("abc", "xyz");
     return null;
   }
-
 }
