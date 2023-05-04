@@ -23,15 +23,4 @@ class FriendState extends ChangeNotifier {
     listFriend = list;
     notifyListeners();
   }
-
-  void filterFriends(String text) {
-    final query = text;
-    if (!query.isEmpty) {
-      listFriend = listFriend
-          .where((friend) =>
-              friend.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
-      notifyListeners();
-    }
-  }
 }
