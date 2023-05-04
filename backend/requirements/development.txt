@@ -212,3 +212,5 @@ urllib3==1.26.15
     #   requests
 wrapt==1.15.0
     # via astroid
+
+gmpy2==2.1.5
