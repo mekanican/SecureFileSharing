@@ -54,7 +54,7 @@ class FriendController {
   }
 
   Future<void> generateCode() async {
-    // Example code to fetch friends from code gểnate
+    // Example get friend code
     friendState.setInviteCode(await Future.delayed(Duration(seconds: 1), () {
       return 'CuAJSTnT${DateTime.now().millisecondsSinceEpoch}';
     }));
@@ -62,7 +62,7 @@ class FriendController {
 
   Future<String> addInviteCode(String ic) async {
     return Future.delayed(Duration(seconds: 1), () {
-      // Example code to fetch IC
+      // Example code to add Invite Code
       return "Success";
     });
   }
