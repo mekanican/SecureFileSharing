@@ -18,57 +18,67 @@ class FriendListPage extends StatefulWidget {
 }
 
 class _FriendListPageState extends State<FriendListPage> {
-  final _pagingController = PagingController<int, Friend>(firstPageKey: 0);
   final _searchController = TextEditingController();
-  String ic = "";
-  Timer? _timer;
+  bool _isInitialized = false; // for render 1 time
+  String ic = ""; // input invite code
+  List<Friend> _listFriend = []; //local state for search
 
   @override
   void initState() {
     super.initState();
-    _timer = Timer.periodic(Duration(seconds: 20), (_) {
-      _pagingController.refresh();
+  }
+
+  //fetch once component start
+  Future<void> fetchInit(
+      FriendState friendState, FriendController friendController) async {
+    await friendController.generateCode();
+    await friendController.fetchFriends();
+    setState(() {
+      _listFriend = friendState.listFriend;
     });
   }
 
-  Future<void> _handleRefresh() async {
-    _pagingController.refresh();
+  //Handle refresh
+  void refreshFresh(
+      FriendState friendState, FriendController friendController) async {
+    await friendController.fetchFriends();
+    setState(() {
+      _listFriend = friendState.listFriend;
+    });
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    _timer?.cancel();
+  // Filter friend with text
+  void filterFriend(FriendState friendState, String text) {
+    final query = text;
+    if (!query.isEmpty) {
+      setState(() {
+        _listFriend = friendState.listFriend
+            .where((friend) =>
+                friend.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      });
+    } else {
+      setState(() {
+        _listFriend = friendState.listFriend;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    // Set up the page request listener
     final friendState = context.watch<FriendState>();
     final friendController = FriendController(friendState);
-
-    _pagingController.addPageRequestListener((pageKey) async {
-      try {
-        final query = _searchController.text;
-        final isLastPage = await friendController.fetchPage(pageKey);
-        friendState.filterFriends(query);
-        if (isLastPage) {
-          _pagingController.appendLastPage(friendState.listFriend);
-        } else {
-          final nextPageKey = pageKey + 1;
-
-          _pagingController.appendPage(friendState.listFriend, nextPageKey);
-        }
-      } catch (error) {
-        _pagingController.error = error;
-      }
-    });
-    // Set up the page request listener
+    if (!_isInitialized) {
+      fetchInit(friendState, friendController)
+          .then((value) => _isInitialized = true);
+    }
 
     return Scaffold(
         appBar: AppBar(
           title: TextField(
             controller: _searchController,
-            onChanged: (_) => _pagingController.refresh(),
+            onChanged: (_) => filterFriend(friendState, _searchController.text),
             decoration: InputDecoration(
               hintText: 'Search friends',
               border: InputBorder.none,
@@ -76,11 +86,12 @@ class _FriendListPageState extends State<FriendListPage> {
           ),
         ),
         body: RefreshIndicator(
-            onRefresh: _handleRefresh,
-            child: PagedListView<int, Friend>(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<Friend>(
-                  itemBuilder: (_, friend, index) {
+          onRefresh: () async => refreshFresh(friendState, friendController),
+          child: ListView.builder(
+              itemCount: _listFriend.length,
+              itemBuilder: (context, index) {
+                // avatar
+                final friend = _listFriend[index];
                 final avatar =
                     friend.name.isNotEmpty ? friend.name[0].toUpperCase() : '';
                 return Card(
@@ -106,7 +117,7 @@ class _FriendListPageState extends State<FriendListPage> {
                   ),
                 );
               }),
-            )),
+        ),
         floatingActionButton: OpenContainer(
           transitionType: ContainerTransitionType.fadeThrough,
           openBuilder: (BuildContext context, VoidCallback _) {
@@ -142,19 +153,54 @@ extension CompareDates on DateTime {
 }
 
 class CopyToClipboardText extends StatelessWidget {
-  final String text;
-
   const CopyToClipboardText({required this.text});
+  final String text;
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        Clipboard.setData(ClipboardData(text: text));
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Copied to clipboard')));
-      },
-      child: Text(text),
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.grey,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => _copyToClipboard(context, text),
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Center(
+                    child: Text(
+                      text,
+                      textAlign: TextAlign.center,
+                    ),
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: IconButton(
+                icon: Icon(Icons.content_copy),
+                onPressed: () => _copyToClipboard(context, text),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _copyToClipboard(BuildContext context, String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Copied to clipboard: $text'),
+      ),
     );
   }
 }
@@ -162,31 +208,60 @@ class CopyToClipboardText extends StatelessWidget {
 class _FriendCodePage extends StatelessWidget {
   String ic = "";
 
+  final _inviteCodeController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     final friendState = context.watch<FriendState>();
     final friendController = FriendController(friendState);
-    friendController.generateCode();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Details page'), actions: [
-        TextButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text('Cancel'),
+      appBar: AppBar(
+        title: Text('Invite Code'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+                child: Text("Give your friend this invite code"),
+                padding: const EdgeInsets.symmetric(vertical: 8)),
+            CopyToClipboardText(text: friendState.inviteCode),
+            SizedBox(height: 16.0),
+            Padding(
+                child: Text("Or"),
+                padding: const EdgeInsets.symmetric(vertical: 8)),
+            TextField(
+              controller: _inviteCodeController,
+              decoration: InputDecoration(
+                labelText: 'Enter invite code',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                final inviteCode = _inviteCodeController.text;
+                // TODO: Store the invite code or send it to a server
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text('Invite code submitted: $inviteCode'),
+                  ),
+                );
+
+                friendController
+                    .addIC(inviteCode)
+                    .then((res) => ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text('$res'),
+                          ),
+                        ));
+              },
+              child: Text('Submit'),
+            ),
+          ],
         ),
-      ]),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CopyToClipboardText(text: friendState.inviteCode),
-          Text('Or '),
-          TextField(
-            decoration: InputDecoration(hintText: "Enter friend's code"),
-            onChanged: (value) => ic = value,
-          ),
-        ],
       ),
     );
   }
