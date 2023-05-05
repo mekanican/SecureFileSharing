@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from asgiref.sync import async_to_sync,sync_to_async
 from ..email_otp.models import EmailOTP
 from ..email_otp.views import SendEmailHandler
 from .serializers import UserSerializer
@@ -17,13 +17,14 @@ class UserRegisterView(APIView):
     """API view to register a new user."""
 
     def post(self, request) -> Response:
+
         cloneRequest = request
         serializer = UserSerializer(data=cloneRequest.data)
         if serializer.is_valid():
             user = serializer.save()
             email_otp = EmailOTP(id=user.id, email=user.email)
             email_otp.save()
-            SendEmailHandler.SendMail(cloneRequest, user)
+            sync_to_async(SendEmailHandler.SendMail)(cloneRequest, user)
             return Response(
                 {"user_id": user.id},
                 status=status.HTTP_201_CREATED,
@@ -58,8 +59,14 @@ class UserLoginView(APIView):
                 {"token": token.key},
                 status=status.HTTP_200_OK,
             )
-        return Response(
-            {"error": "Invalid credentials"},
+        else:
+            if user:
+                return  Response(
+                {"error":"Unverified email"},
+                status=status.HTTP_400_BAD_REQUEST,)
+        
+        return  Response(
+            {"error":"Invalid credentials"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
