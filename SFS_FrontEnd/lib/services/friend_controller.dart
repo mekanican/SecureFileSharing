@@ -61,7 +61,7 @@ class FriendController {
 
   Future<String> addInviteCode(String ic) async {
     return Future.delayed(Duration(seconds: 1), () {
-      // Example code to fetch IC
+      // Example code to add Invite Code
       return "Success";
     });
   }
