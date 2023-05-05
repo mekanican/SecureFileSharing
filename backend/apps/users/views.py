@@ -17,7 +17,7 @@ class UserRegisterView(APIView):
     """API view to register a new user."""
 
     def post(self, request) -> Response:
-        print("have request");
+
         cloneRequest = request
         serializer = UserSerializer(data=cloneRequest.data)
         if serializer.is_valid():
