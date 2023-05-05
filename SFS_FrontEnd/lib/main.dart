@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import 'package:sfs_frontend/pages/GuestRoute/guest_route.dart';
 import 'package:sfs_frontend/services/user_state.dart';
-import 'package:sfs_frontend/services/friend_state.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +18,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => UserState()),
-        ChangeNotifierProvider(create: (_) => FriendState()),
       ],
       child: MaterialApp(
         title: 'SFS',

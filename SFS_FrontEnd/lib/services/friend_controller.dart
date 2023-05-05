@@ -1,13 +1,11 @@
 import 'dart:math';
 import 'package:sfs_frontend/models/friend.dart';
-import 'package:sfs_frontend/services/friend_state.dart';
 
 // Note that we should use WebHook for receive incoming event
 // if you want to change to pooling, contact me instead
 class FriendController {
   // Example list of friends
-  final FriendState friendState;
-  FriendController(this.friendState);
+
   final _friendPerPage = 3;
 
   Future<int> getNumberOfFriend() async {
@@ -16,6 +14,27 @@ class FriendController {
       return 4;
     });
     ;
+  }
+
+  Future<List<Friend>> fetchPage(int pageKey) async {
+    List<Friend> friends = [];
+    try {
+      friends = await getFriends(startAt: pageKey, pageSize: _friendPerPage);
+      print("friends result: $friends");
+      print("pageKey: $pageKey");
+
+      List<Friend> temp = [...friends];
+      friends.sort((a, b) => b.lastMessageAt.compareTo(a.lastMessageAt));
+      friends.forEach((element) {
+        temp.removeWhere((elementQuery) => elementQuery.name == element.name);
+      });
+
+      temp.insertAll(0, friends);
+
+      return temp;
+    } catch (error) {
+      return friends;
+    }
   }
 
   Future<List<Friend>> getFriends({startAt, pageSize}) async {
@@ -33,31 +52,11 @@ class FriendController {
     });
   }
 
-  // Chunk data to page and fetch
-  Future<void> fetchFriends() async {
-    List<Friend> temp = [...friendState.listFriend];
-    List<Friend> friends = [];
-    int pageKey = 0;
-    final numberFriend = await getNumberOfFriend();
-
-    do {
-      friends = await getFriends(startAt: pageKey, pageSize: _friendPerPage);
-
-      friends.sort((a, b) => b.lastMessageAt.compareTo(a.lastMessageAt));
-      friends.forEach((element) {
-        temp.removeWhere((elementQuery) => elementQuery.name == element.name);
-      });
-      temp.insertAll(0, friends);
-      pageKey++;
-    } while (friends.length == _friendPerPage);
-    friendState.listFriend = temp;
-  }
-
-  Future<void> generateCode() async {
+  Future<String> generateCode() async {
     // Example code to fetch friends from code gểnate
-    friendState.setInviteCode(await Future.delayed(Duration(seconds: 1), () {
+    return await Future.delayed(Duration(seconds: 1), () {
       return 'CuAJSTnT${DateTime.now().millisecondsSinceEpoch}';
-    }));
+    });
   }
 
   Future<String> addInviteCode(String ic) async {
