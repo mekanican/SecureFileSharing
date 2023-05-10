@@ -27,7 +27,8 @@
       "editor.formatOnSave": true,
       "editor.codeActionsOnSave": {
       "source.organizeImports": true,
-      },
+    },
+    "editor.defaultFormatter": "ms-python.autopep8",
   },
 
   // Enable automatic trimming of trailing whitespace
@@ -79,4 +80,5 @@
     "cSpell.words": [
         "primality"
     ],
+    "python.formatting.provider": "none",
 }
