@@ -223,7 +223,46 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ## API Endpoint
 
-`GET /api/fileSharing/upload`
+> **Warning**
+> This api for testing upload file, Haven't handle token authen
+
+`POST /api/fileSharing/upload`
+
+## Request Header
+
+`HTTP/1.1`
+`Content-Type: application/json`
+
+## Request Body
+
+| Field    | Type   | Description                   |
+| -------- | ------ | ----------------------------- |
+| username | string | Username of the user          |
+| filename | string | File name with extend path    |
+| myfile   | string | file content in base64 string |
+
+## Response
+
+If the request is successful, the API will return the following response:
+
+```json
+{
+    "messages": "success" ,
+    "url": <url for downloading file>
+}
+```
+
+with the status code `200 OK`.  
+If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
+
+```json
+{
+    "messages":<error detail> ,
+
+}
+```
+
+## Example
 
 ### Successful request
 
@@ -231,8 +270,9 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 {
-    "myfile": <File_upload>,
-
+  "username": "kang",
+  "filename": "test.txt",
+  "myfile": "DQpsw6BtIHJlcG9ydDoNCglEYXRhc2V0OiAoMTJoIHRyxrBhIDI4LzQgLSB2ZXIgMS4wIC0+IDEvNSB2ZXIgMi4wKQ0KCS0gdXJsLCBuZ3Xhu5NuIGfhu5FjIOG7nyDEkcOidSwgZG8gYWkgdOG6oW8gcmEgDQoJLSBkb3dubG9hZCB24buBIHbDoCBt4bufIHJhIHhlbSDEkcaw4bujYyBoYXkgY2jGsGENCgktIGThu68gbGnhu4d1IGPDsyBu4buZaSBkdW5nIGfDrAkNCgkJKyBrw61jaCB0aMaw4bubYyBi4buZIGThu68gbGnhu4d1ICh24buBIGR1bmcgbMaw4bujbmcsIHPhu5EgbMaw4bujbmcuLi4pDQoJCSsgY8OzIGxhYmVsL2Fubm90YXRpb24ga2jDtG5nDQoJCSsgdMOtbmggY2jhuqV0IHbhu4EgbuG7mWkgZHVuZzogZGF0YXNldCBiYW8gbmhpw6p1IGNsYXNzLCBt4buXaSBjbGFzcyBiYW8gbmhpw6p1IGRhdGEsIGNo4bqldCBsxrDhu6NuZyBkYXRhIG50bi4uLg0KCS0gdXkgdMOtbiBj4bunYSBkYXRhc2V0Pw0KCQkrIGPDsyBuaGnhu4F1IG5nxrDhu51pIHPhu60gZOG7pW5nIMSR4buDIG5naGnDqm4gY+G7qXUga2jDtG5nLCBoYXkgbuG6v3UgY8OzIGNvbXBldGl0aW9uIHbhu4EgZGF0YXNldCBuw6B5IHRow6wgY8OzIG5oaeG7gXUgbmfGsOG7nWkgdGhhbSBnaWEgaGF5IGtow7RuZw0KCS0gbGVhZGVyYm9hcmQgKGvhur90IHF14bqjKTogeOG6v3AgaOG6oW5nIHbhu4EgbeG7qWMgxJHhu5kgdGjDoG5oIGPDtG5nIG3DoCBt4buNaSBuZ8aw4budaSDEkcOjIHRo4buxYyBoaeG7h24gdHLDqm4gZGF0YXNldCBuw6B5LiBUaOG6p3kga8OqdSBjw6FpIG7DoHkgdGjhuqd5IHPhur0gaMaw4bubbmcgZOG6q24gdGjDqm0="
 }
 ```
 
@@ -240,10 +280,8 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 {
- {
-    "messages": "success",
-    "url": "http://localhost:9000/django-minio/01-05-2023_22-55-32___241397803_601326841030855_5571972979464034506_n.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20230501%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230501T155532Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=de2e575288ea46f17664c2e36869bab454a2624b22dc799b5ff19dcbc00e1dc8"
-}
+  "messages": "success",
+  "url": "http://localhost:9000/django-minio/11-05-2023_00-29-18___test.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20230510%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230510T172939Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=8751eb59511d3a87019dbdb58f463b6cc51e6d017949fbfb18bf091e5883d07b"
 }
 ```
 
@@ -253,8 +291,9 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 {
-    "myfile":<empty_content>,
-
+  "username": "kang",
+  "filename": "test.txt",
+  "myfile": "data:image/png;"
 }
 ```
 
@@ -262,9 +301,87 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 {
- {
-    "messages": "failed",
-    "url": ""
+  "messages": "File content must be base64"
 }
+```
+
+# Delete API
+
+## API Endpoint
+
+> **Warning**
+> This api for testing upload file, haven't handle token authen
+
+`POST /api/fileSharing/remove`
+
+## Request Header
+
+`HTTP/1.1`
+`Content-Type: application/json`
+
+## Request Body
+
+| Field    | Type   | Description                |
+| -------- | ------ | -------------------------- |
+| filename | string | File name with extend path |
+
+## Response
+
+If the request is successful, the API will return the following response:
+
+```json
+{
+  "messages": "success"
+}
+```
+
+with the status code `200 OK`.  
+If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
+
+```json
+{
+    "messages":<error detail> ,
+
+}
+```
+
+## Example
+
+### Successful request
+
+#### Request
+
+```json
+{
+  "filename": "11-05-2023_00-12-45___test"
+}
+```
+
+#### Response
+
+```json
+{
+  "messages": "success",
+  "url": "http://localhost:9000/django-minio/11-05-2023_00-29-18___test.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20230510%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230510T172939Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=8751eb59511d3a87019dbdb58f463b6cc51e6d017949fbfb18bf091e5883d07b"
+}
+```
+
+### Fail request
+
+#### Request
+
+```json
+{
+  "filename": "11-05-2023_00-12-45___test" || (
+    <filename not contain in minio>
+  )
+}
+```
+
+#### Response
+
+```
+{
+  "messages": "file not exist"
 }
 ```

@@ -36,7 +36,7 @@ class SendEmailHandler:
 
         link=receiverParsing.build_absolute_uri('/api/email_otp/verify?token=')+token;
         msg_html = render_to_string('email_template.html', {'email': email,'link':link})
-    
+        print('sent');
         send_mail(
             "Secure File Sharing verify mail",
             message="",
