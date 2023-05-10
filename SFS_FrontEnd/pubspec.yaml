@@ -49,6 +49,7 @@ dependencies:
   dio: ^5.1.1
   provider: ^6.0.5
   animations: ^2.0.7
+  widget_circular_animator: ^1.0.0
 
 
 dev_dependencies:
