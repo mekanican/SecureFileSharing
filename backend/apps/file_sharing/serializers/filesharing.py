@@ -1,7 +1,6 @@
 from rest_framework import serializers;
 from ..models.filesharing import FileSharing
 from ...users.models import User
-from drf_extra_fields.fields import Base64FileField
 
 class FileSharingSerializer(serializers.ModelSerializer):
  
