@@ -24,7 +24,7 @@ class UserRegisterView(APIView):
             user = serializer.save()
             email_otp = EmailOTP(id=user.id, email=user.email)
             email_otp.save()
-            sync_to_async(SendEmailHandler.SendMail)(cloneRequest, user)
+            SendEmailHandler.SendMail(cloneRequest, user)
             return Response(
                 {"user_id": user.id},
                 status=status.HTTP_201_CREATED,
