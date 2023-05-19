@@ -46,13 +46,13 @@ class MinioHandler():
             self.client.make_bucket(self.bucket_name)
         return self.bucket_name
 
-    def presigned_get_object(self, bucket_name, object_name) -> AnyStr:
+    def presigned_get_object(self, bucket_name, object_name, ttl=7) -> AnyStr:
         """Docstring."""
         # Request URL expired after 7 days
         url = self.client.presigned_get_object(
             bucket_name=bucket_name,
             object_name=object_name,
-            expires=timedelta(days=7),
+            expires=timedelta(days=ttl),
         )
         return url
 
@@ -68,7 +68,7 @@ class MinioHandler():
             print(f"[x] Exception: {e}")
             return False
 
-    def put_object(self, file_data, file_name, content_type) -> dict[str, Any]:
+    def put_object(self, file_data, file_name, content_type, ttl=7) -> dict[str, Any]:
         """Docstring."""
         try:
             datetime_prefix = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
@@ -93,6 +93,7 @@ class MinioHandler():
             url = self.presigned_get_object(
                 bucket_name=self.bucket_name,
                 object_name=object_name,
+                ttl=ttl
             )
             data_file = {
                 "bucket_name": self.bucket_name,
