@@ -237,9 +237,11 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 | Field    | Type   | Description                   |
 | -------- | ------ | ----------------------------- |
-| username | string | Username of the user          |
+| to       | int    | Receiver's id                 |
+| token    | string | Sender's token                |
 | filename | string | File name with extend path    |
 | myfile   | string | file content in base64 string |
+| ttl      | int    | Time to live in days [1; 365] |
 
 ## Response
 
@@ -305,7 +307,7 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 }
 ```
 
-# Delete API
+# Delete API (Deprecated)
 
 ## API Endpoint
 
