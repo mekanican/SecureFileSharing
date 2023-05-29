@@ -66,27 +66,12 @@ class UploadFileHandler(APIView):
 
         user = Token.objects.get(key=token).user
 
-        # if(FileSharingSerializer.validate_username(username)==0):
-        #         return Response(
-        #             {"messages":"username not available"},
-        #             status=status.HTTP_400_BAD_REQUEST,
-        #         )
         try:
-            if isBase64(myfile) == False:
+            if not isBase64(myfile):
                 return Response(
                     {"messages": "File content must be base64"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-
-            # No file has the same name since put_onject automatically add time stamp to name stored on server!
-            # if minio_handler.check_file_name_exists(
-            #     bucket_name=minio_handler.make_bucket(), file_name=filename
-            # ):
-            #     return Response(
-            #         {"messages": "file name exist"},
-            #         status=status.HTTP_400_BAD_REQUEST,
-            #     )
-            # else:
             file_data = base64.b64decode(myfile)
 
             # Check for time_to_live
@@ -101,21 +86,27 @@ class UploadFileHandler(APIView):
                 file_data=BytesIO(file_data),
                 file_name=filename,
                 content_type="application/octet-stream",
-                ttl=time_to_live
+                ttl=time_to_live,
             )
             file = FileSharing.objects.create()
-            file.from_ = user.id
-            
+            file.from_user = user.id
+
             # Check for compatible to_id:
             if not User.objects.filter(id=to_id).exists():
                 return Response(
                     {"messages": "ID not exist"},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            # TODO: Check for friends ? Make another table n-n User-User for friend specification
-                
-            file.to_ = to_id
-            file.file_name = filename # fileStoreInMinio["file_name"]
+            # There's at least 1 message between this & that (Hello message when add friend)
+            if not FileSharing.objects.filter(from_user=user.id, to_user=to_id)\
+               and not FileSharing.objects.filter(from_user=to_id, to_user=user.id):
+                return Response(
+                    {"messages": "Receiver id not recognized"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            file.to_user = to_id
+            file.file_name = filename  # fileStoreInMinio["file_name"]
             file.url = fileStoreInMinio["url"]
             # file.bucket_name = fileStoreInMinio["bucket_name"]
             file.uploaded_at = datetime.now()
@@ -130,7 +121,6 @@ class UploadFileHandler(APIView):
                 {"messages": str(err), "url": ""},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-            # return HttpResponseRedirect(redirect_to=cloneRequest.build_absolute_uri('/api/fileSharing/upload')) # uncomment for testing
 
 
 # No need this since time to live is enough
