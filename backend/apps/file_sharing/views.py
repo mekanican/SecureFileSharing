@@ -45,6 +45,7 @@ class UploadFileHandler(APIView):
 
     def get(self, request):
         cloneRequest = request
+        # breakpoint()
         files = FileSharing.objects.all()
         print(files)
         return render(
@@ -177,7 +178,7 @@ class ChatHandler(APIView):
                 {"messages": "Receiver id not recognized"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        
+
         qs = FileSharing.objects.filter(from_user=user.id, to_user=to_id)\
             .union(FileSharing.objects.filter(from_user=to_id, to_user=user.id))\
             .order_by('uploaded_at')\
