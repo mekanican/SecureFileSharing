@@ -1,11 +1,12 @@
 
 # pylint: disable=no-member,broad-exception-caught
+from asgiref.sync import async_to_sync, sync_to_async
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from asgiref.sync import async_to_sync,sync_to_async
+
 from ..email_otp.models import EmailOTP
 from ..email_otp.views import SendEmailHandler
 from .serializers import UserSerializer
@@ -56,7 +57,10 @@ class UserLoginView(APIView):
         if user and email_otp.date_verify:
             token, _ = Token.objects.get_or_create(user=user)
             return Response(
-                {"token": token.key},
+                {
+                    "token": token.key,
+                    "user_id": user.id,
+                },
                 status=status.HTTP_200_OK,
             )
         else:
@@ -64,7 +68,7 @@ class UserLoginView(APIView):
                 return  Response(
                 {"error":"Unverified email"},
                 status=status.HTTP_400_BAD_REQUEST,)
-        
+
         return  Response(
             {"error":"Invalid credentials"},
             status=status.HTTP_400_BAD_REQUEST,
