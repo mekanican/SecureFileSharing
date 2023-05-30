@@ -3,6 +3,7 @@ import json
 from datetime import datetime
 from io import BytesIO
 
+import requests
 from apps.file_sharing.minio_handler import MinioHandler
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse, HttpResponseRedirect
@@ -20,6 +21,8 @@ from .models.filesharing import FileSharing
 from .serializers import FileSharingSerializer
 
 minio_handler = MinioHandler.get_instance()
+
+CHAT_SERVICE_PORT = "23432"  # TODO: Export to env
 
 
 def isBase64(sb):
@@ -108,9 +111,12 @@ class UploadFileHandler(APIView):
             file.to_user = to_id
             file.file_name = filename  # fileStoreInMinio["file_name"]
             file.url = fileStoreInMinio["url"]
-            # file.bucket_name = fileStoreInMinio["bucket_name"]
             file.uploaded_at = datetime.now()
             file.save()
+            # Now notify both of them for reloading
+            requests.get("localhost:" + CHAT_SERVICE_PORT + "/" + str(user.id), timeout=5)
+            requests.get("localhost:" + CHAT_SERVICE_PORT + "/" + str(to_id), timeout=5)
+
 
             return Response(
                 {"messages": "success", "url": file.url},
