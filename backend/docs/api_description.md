@@ -307,7 +307,7 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 }
 ```
 
-# Delete API (Deprecated)
+<!-- # Delete API (Deprecated) -->
 
 ## API Endpoint
 
@@ -386,4 +386,73 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 {
   "messages": "file not exist"
 }
+```
+
+# Get Friend
+
+## API Endpoint
+
+`POST /api/fileSharing/friend`
+
+## Request Header
+
+`HTTP/1.1`
+`Content-Type: application/json`
+
+## Request Body
+
+| Field    | Type   | Description                |
+| -------- | ------ | -------------------------- |
+| token | string | the token |
+
+## Response
+
+If the request is successful, the API will return the following response:
+
+```json
+[
+	{
+		"id": 2,
+		"from_user_id": 1,
+		"to_user_id": 2,
+		"url": "https://example.com",
+		"uploaded_at": "2023-05-30T14:43:46Z",
+		"friend_id": 1
+	}
+]
+```
+
+
+# Get Chat
+
+## API Endpoint
+
+`POST /api/fileSharing/chat`
+
+## Request Header
+
+`HTTP/1.1`
+`Content-Type: application/json`
+
+## Request Body
+
+| Field    | Type   | Description                |
+| -------- | ------ | -------------------------- |
+| token | string | the token |
+| to_id | int | receiver user id |
+
+## Response
+
+If the request is successful, the API will return the following response:
+
+```json
+[
+	{
+		"id": 2,
+		"from_user_id": 1,
+		"to_user_id": 2,
+		"url": "https://example.com",
+		"uploaded_at": "2023-05-30T14:43:46Z"
+	}
+]
 ```

@@ -6,6 +6,7 @@ from io import BytesIO
 import requests
 from apps.file_sharing.minio_handler import MinioHandler
 from django.core.files.storage import FileSystemStorage
+from django.db.models import F
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.utils.decorators import method_decorator
@@ -155,3 +156,53 @@ class UploadFileHandler(APIView):
 #                 status=status.HTTP_400_BAD_REQUEST,
 #             )
 #         # return HttpResponseRedirect(redirect_to=cloneRequest.build_absolute_uri('/api/fileSharing/upload')) #uncomment for testing
+
+
+class ChatHandler(APIView):
+    def post(self, request):
+        cloneRequest = JSONParser().parse(request)
+        token = cloneRequest.get("token")
+        to_id = cloneRequest.get("to_id")
+        user = Token.objects.get(key=token).user
+        # Check for compatible to_id:
+        if not User.objects.filter(id=to_id).exists():
+            return Response(
+                {"messages": "ID not exist"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        # There's at least 1 message between this & that (Hello message when add friend)
+        if not FileSharing.objects.filter(from_user=user.id, to_user=to_id)\
+           and not FileSharing.objects.filter(from_user=to_id, to_user=user.id):
+            return Response(
+                {"messages": "Receiver id not recognized"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        
+        qs = FileSharing.objects.filter(from_user=user.id, to_user=to_id)\
+            .union(FileSharing.objects.filter(from_user=to_id, to_user=user.id))\
+            .order_by('uploaded_at')\
+            .values()
+        result = [entry for entry in qs]
+
+        return Response(
+            result,
+            status=status.HTTP_200_OK
+        )
+
+
+class FriendHandler(APIView):
+    def post(self, request):
+        cloneRequest = JSONParser().parse(request)
+        token = cloneRequest.get("token")
+        user = Token.objects.get(key=token).user
+
+        qs = FileSharing.objects.filter(from_user=user.id).annotate(friend_id=F("to_user")).only("friend_id", "uploaded_at")\
+            .union(FileSharing.objects.filter(to_user=user.id).annotate(friend_id=F("from_user")).only("friend_id", "uploaded_at"))\
+            .values()
+        result = [entry for entry in qs]
+
+        return Response(
+            result,
+            status=status.HTTP_200_OK
+        )
+
