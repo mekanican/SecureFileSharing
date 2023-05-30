@@ -1,13 +1,15 @@
+# from apps.users.models import User
+# import get_user_model
+from django.contrib.auth import get_user_model
 from django.db import models
 
-from ...users.models import User
-
+User = get_user_model()
 
 class FileSharing(models.Model):
-    # username = models.CharField(max_length=50,)
     from_user = models.ForeignKey(User, related_name="from_user", on_delete=models.CASCADE)
     to_user = models.ForeignKey(User, related_name="to_user", on_delete=models.CASCADE)
-    # file_name = models.CharField(max_length=255, blank=True)
-    url = models.CharField(max_length=1000, blank=True)
+    url = models.CharField(max_length=1000, blank=True, null=True)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    # bucket_name= models.CharField(max_length=255,blank=True)
+
+    def __str__(self):
+        return f"{self.from_user} to {self.to_user} with URL {self.url}"
