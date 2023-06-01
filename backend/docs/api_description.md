@@ -252,6 +252,7 @@ If the request is successful, the API will return the following response:
     "messages": "success" ,
     "url": <url for downloading file>
 }
+
 ```
 
 with the status code `200 OK`.  
@@ -272,9 +273,11 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 {
-  "username": "kang",
-  "filename": "test.txt",
-  "myfile": "DQpsw6BtIHJlcG9ydDoNCglEYXRhc2V0OiAoMTJoIHRyxrBhIDI4LzQgLSB2ZXIgMS4wIC0+IDEvNSB2ZXIgMi4wKQ0KCS0gdXJsLCBuZ3Xhu5NuIGfhu5FjIOG7nyDEkcOidSwgZG8gYWkgdOG6oW8gcmEgDQoJLSBkb3dubG9hZCB24buBIHbDoCBt4bufIHJhIHhlbSDEkcaw4bujYyBoYXkgY2jGsGENCgktIGThu68gbGnhu4d1IGPDsyBu4buZaSBkdW5nIGfDrAkNCgkJKyBrw61jaCB0aMaw4bubYyBi4buZIGThu68gbGnhu4d1ICh24buBIGR1bmcgbMaw4bujbmcsIHPhu5EgbMaw4bujbmcuLi4pDQoJCSsgY8OzIGxhYmVsL2Fubm90YXRpb24ga2jDtG5nDQoJCSsgdMOtbmggY2jhuqV0IHbhu4EgbuG7mWkgZHVuZzogZGF0YXNldCBiYW8gbmhpw6p1IGNsYXNzLCBt4buXaSBjbGFzcyBiYW8gbmhpw6p1IGRhdGEsIGNo4bqldCBsxrDhu6NuZyBkYXRhIG50bi4uLg0KCS0gdXkgdMOtbiBj4bunYSBkYXRhc2V0Pw0KCQkrIGPDsyBuaGnhu4F1IG5nxrDhu51pIHPhu60gZOG7pW5nIMSR4buDIG5naGnDqm4gY+G7qXUga2jDtG5nLCBoYXkgbuG6v3UgY8OzIGNvbXBldGl0aW9uIHbhu4EgZGF0YXNldCBuw6B5IHRow6wgY8OzIG5oaeG7gXUgbmfGsOG7nWkgdGhhbSBnaWEgaGF5IGtow7RuZw0KCS0gbGVhZGVyYm9hcmQgKGvhur90IHF14bqjKTogeOG6v3AgaOG6oW5nIHbhu4EgbeG7qWMgxJHhu5kgdGjDoG5oIGPDtG5nIG3DoCBt4buNaSBuZ8aw4budaSDEkcOjIHRo4buxYyBoaeG7h24gdHLDqm4gZGF0YXNldCBuw6B5LiBUaOG6p3kga8OqdSBjw6FpIG7DoHkgdGjhuqd5IHPhur0gaMaw4bubbmcgZOG6q24gdGjDqm0="
+	"token": "ec4a3da295ca4030582f544062a56203ace7bf5c",
+	"to": 2,
+	"filename": "abc345.txt",
+	"myfile": "YWJjYWJjCg==",
+	"ttl": 3
 }
 ```
 
@@ -282,117 +285,17 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 {
-  "messages": "success",
-  "url": "http://localhost:9000/django-minio/11-05-2023_00-29-18___test.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20230510%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230510T172939Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=8751eb59511d3a87019dbdb58f463b6cc51e6d017949fbfb18bf091e5883d07b"
+	"messages": "success",
+	"url": "http://localhost:9000/django-minio/01-06-2023_01-46-42___abc345.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20230601%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230601T014642Z&X-Amz-Expires=259200&X-Amz-SignedHeaders=host&X-Amz-Signature=d2319b640b0f56ce0067d00f0c0a101ba6a65b71e389bd43d0ff029c3520861d"
 }
 ```
 
 ### Fail request
-
-#### Request
-
-```json
-{
-  "username": "kang",
-  "filename": "test.txt",
-  "myfile": "data:image/png;"
-}
-```
-
-#### Response
-
-```json
-{
-  "messages": "File content must be base64"
-}
-```
-
-<!-- # Delete API (Deprecated) -->
-
-## API Endpoint
-
-> **Warning**
-> This api for testing upload file, haven't handle token authen
-
-`POST /api/fileSharing/remove`
-
-## Request Header
-
-`HTTP/1.1`
-`Content-Type: application/json`
-
-## Request Body
-
-| Field    | Type   | Description                |
-| -------- | ------ | -------------------------- |
-| filename | string | File name with extend path |
-
-## Response
-
-If the request is successful, the API will return the following response:
-
-```json
-{
-  "messages": "success"
-}
-```
-
-with the status code `200 OK`.  
-If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
-
-```json
-{
-    "messages":<error detail> ,
-
-}
-```
-
-## Example
-
-### Successful request
-
-#### Request
-
-```json
-{
-  "filename": "11-05-2023_00-12-45___test"
-}
-```
-
-#### Response
-
-```json
-{
-  "messages": "success",
-  "url": "http://localhost:9000/django-minio/11-05-2023_00-29-18___test.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20230510%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230510T172939Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=8751eb59511d3a87019dbdb58f463b6cc51e6d017949fbfb18bf091e5883d07b"
-}
-```
-
-### Fail request
-
-#### Request
-
-```json
-{
-  "filename": "11-05-2023_00-12-45___test" || (
-    <filename not contain in minio>
-  )
-}
-```
-
-#### Response
-
-```
-{
-  "messages": "file not exist"
-}
-```
-
 # Get Friend
 
 ## API Endpoint
 
-`POST /api/fileSharing/friend`
+`POST /api/fileSharing/friend/`
 
 ## Request Header
 
@@ -405,19 +308,18 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 | -------- | ------ | -------------------------- |
 | token | string | the token |
 
-## Response
+```json
+  "token": "ec4a3da295ca4030582f544062a56203ace7bf5c"
+```
 
-If the request is successful, the API will return the following response:
+## Response
 
 ```json
 [
 	{
-		"id": 2,
-		"from_user_id": 1,
-		"to_user_id": 2,
-		"url": "https://example.com",
-		"uploaded_at": "2023-05-30T14:43:46Z",
-		"friend_id": 1
+		"friend_id": 2,
+		"uploaded_at": "2023-05-31T03:56:14",
+		"username": "nghia1"
 	}
 ]
 ```
@@ -427,7 +329,7 @@ If the request is successful, the API will return the following response:
 
 ## API Endpoint
 
-`POST /api/fileSharing/chat`
+`POST /api/fileSharing/chat/`
 
 ## Request Header
 
@@ -441,6 +343,13 @@ If the request is successful, the API will return the following response:
 | token | string | the token |
 | to_id | int | receiver user id |
 
+```json
+{
+	"token": "ec4a3da295ca4030582f544062a56203ace7bf5c",
+	"to_id": 2
+}
+```
+
 ## Response
 
 If the request is successful, the API will return the following response:
@@ -452,7 +361,7 @@ If the request is successful, the API will return the following response:
 		"from_user_id": 1,
 		"to_user_id": 2,
 		"url": "https://example.com",
-		"uploaded_at": "2023-05-30T14:43:46Z"
+		"uploaded_at": "2023-05-30T14:43:46"
 	}
 ]
 ```

@@ -81,4 +81,5 @@
         "primality"
     ],
     "python.formatting.provider": "none",
+    "python.linting.enabled": false,
 }

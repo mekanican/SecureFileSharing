@@ -5,7 +5,9 @@ from io import BytesIO
 
 import requests
 from apps.file_sharing.minio_handler import MinioHandler
+from django.contrib.auth import get_user_model
 from django.core.files.storage import FileSystemStorage
+from django.db import connection
 from django.db.models import F
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -17,7 +19,8 @@ from rest_framework.parsers import JSONParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from ..users.models import User
+User = get_user_model()
+
 from .models.filesharing import FileSharing
 from .serializers import FileSharingSerializer
 
@@ -87,15 +90,6 @@ class UploadFileHandler(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            fileStoreInMinio = minio_handler.put_object(
-                file_data=BytesIO(file_data),
-                file_name=filename,
-                content_type="application/octet-stream",
-                ttl=time_to_live,
-            )
-            file = FileSharing.objects.create()
-            file.from_user = user.id
-
             # Check for compatible to_id:
             if not User.objects.filter(id=to_id).exists():
                 return Response(
@@ -110,14 +104,25 @@ class UploadFileHandler(APIView):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            file.to_user = to_id
+            fileStoreInMinio = minio_handler.put_object(
+                file_data=BytesIO(file_data),
+                file_name=filename,
+                content_type="application/octet-stream",
+                ttl=time_to_live,
+            )
+            file = FileSharing()
+            file.from_user = user
+            file.to_user = User.objects.get(id=to_id)
             file.file_name = filename  # fileStoreInMinio["file_name"]
             file.url = fileStoreInMinio["url"]
             file.uploaded_at = datetime.now()
             file.save()
             # Now notify both of them for reloading
-            requests.get("localhost:" + CHAT_SERVICE_PORT + "/" + str(user.id), timeout=5)
-            requests.get("localhost:" + CHAT_SERVICE_PORT + "/" + str(to_id), timeout=5)
+            try:
+                requests.get("localhost:" + CHAT_SERVICE_PORT + "/" + str(user.id), timeout=5)
+                requests.get("localhost:" + CHAT_SERVICE_PORT + "/" + str(to_id), timeout=5)
+            except Exception as e:
+                pass
 
 
             return Response(
@@ -183,6 +188,7 @@ class ChatHandler(APIView):
             .union(FileSharing.objects.filter(from_user=to_id, to_user=user.id))\
             .order_by('uploaded_at')\
             .values()
+
         result = [entry for entry in qs]
 
         return Response(
@@ -197,10 +203,42 @@ class FriendHandler(APIView):
         token = cloneRequest.get("token")
         user = Token.objects.get(key=token).user
 
-        qs = FileSharing.objects.filter(from_user=user.id).annotate(friend_id=F("to_user")).only("friend_id", "uploaded_at")\
-            .union(FileSharing.objects.filter(to_user=user.id).annotate(friend_id=F("from_user")).only("friend_id", "uploaded_at"))\
-            .values()
-        result = [entry for entry in qs]
+        result = []
+
+        with connection.cursor() as cursor:
+            cursor.execute("""
+            SELECT tmp_table.*, auth_user.username
+            FROM
+                (
+                    SELECT
+                        MAX(file_sharing_filesharing.uploaded_at), 
+                        file_sharing_filesharing.to_user_id AS 'friend_id'
+                    FROM 
+                        file_sharing_filesharing 
+                    WHERE 
+                        file_sharing_filesharing.from_user_id = %(id)s
+                    GROUP BY
+                        friend_id
+                UNION 
+                    SELECT 
+                        MAX(file_sharing_filesharing.uploaded_at), 
+                        file_sharing_filesharing.from_user_id AS 'friend_id'
+                    FROM 
+                        file_sharing_filesharing
+                    WHERE 
+                        file_sharing_filesharing.to_user_id = %(id)s
+                    GROUP BY
+                        friend_id
+                ) as tmp_table
+            INNER JOIN
+                auth_user ON auth_user.id = tmp_table.friend_id
+            """, {"id": user.id})
+            for i in cursor.fetchall():
+                result.append({
+                    "friend_id":i[1],
+                    "uploaded_at":i[0].strftime("%Y-%m-%dT%H:%M:%S"),
+                    "username":i[2]
+                })
 
         return Response(
             result,
