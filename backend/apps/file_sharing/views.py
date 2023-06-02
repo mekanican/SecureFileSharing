@@ -26,8 +26,10 @@ from .serializers import FileSharingSerializer
 
 minio_handler = MinioHandler.get_instance()
 
-CHAT_SERVICE_PORT = "23432"  # TODO: Export to env
-
+def notifier(a: int, b: int) -> None:
+    from django.conf import settings
+    requests.get(settings.CHAT_SERVICE_HOST + ":" + settings.CHAT_SERVICE_PORT + "/" + str(a), timeout=5)
+    requests.get(settings.CHAT_SERVICE_HOST + ":" + settings.CHAT_SERVICE_PORT + "/" + str(b), timeout=5)
 
 def isBase64(sb):
     try:
@@ -119,8 +121,7 @@ class UploadFileHandler(APIView):
             file.save()
             # Now notify both of them for reloading
             try:
-                requests.get("localhost:" + CHAT_SERVICE_PORT + "/" + str(user.id), timeout=5)
-                requests.get("localhost:" + CHAT_SERVICE_PORT + "/" + str(to_id), timeout=5)
+                notifier(user.id, to_id)
             except Exception as e:
                 pass
 
@@ -134,34 +135,6 @@ class UploadFileHandler(APIView):
                 {"messages": str(err), "url": ""},
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-
-# No need this since time to live is enough
-# class RemoveFileHandler(APIView):
-#     def post(self, request):
-#         cloneRequest = request
-#         jsonDelete = JSONParser().parse(cloneRequest)
-#         file_name = jsonDelete.get("filename")
-
-#         try:
-#             q1 = FileSharing.objects.get(file_name=file_name)
-#             if q1 and minio_handler.check_file_name_exists(
-#                 bucket_name=minio_handler.make_bucket(), file_name=file_name
-#             ):
-#                 print(file_name)
-
-#                 if minio_handler.remove_object(q1.bucket_name, q1.file_name):
-#                     q1.delete()
-#                     return Response(
-#                         {"messages": "success"},
-#                         status=status.HTTP_201_CREATED,
-#                     )
-#         except:
-#             return Response(
-#                 {"messages": "file not exist"},
-#                 status=status.HTTP_400_BAD_REQUEST,
-#             )
-#         # return HttpResponseRedirect(redirect_to=cloneRequest.build_absolute_uri('/api/fileSharing/upload')) #uncomment for testing
 
 
 class ChatHandler(APIView):
