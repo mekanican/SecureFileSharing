@@ -170,6 +170,5 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "securefilesharingsp@gmail.com"
 
-
-
-
+CHAT_SERVICE_HOST = "localhost"
+CHAT_SERVICE_PORT = "23432"  # TODO: Export to env
