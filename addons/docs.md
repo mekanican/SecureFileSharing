@@ -10,7 +10,8 @@ python3 run.py
 # How to use
 By default, server will run on [localhost:9087](localhost:9087).
 ## Malware detection
-Sample data (malware files) are stored in `malware_detection/samples` folder.
+Sample data (malware files) are stored in `malware_detection/samples` folder.  
+NOTE: USE MD5 HASH
 ### Request
 ```bash
 POST /api/malware
