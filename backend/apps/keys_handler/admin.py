@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import RSAPrivateKey, RSAPublicKey
+from .models import RSAPublicKey
 
 admin.site.register(RSAPublicKey)

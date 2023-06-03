@@ -1,8 +1,9 @@
-from rest_framework import serializers
 from apps.email_otp.models import EmailOTP
+from rest_framework import serializers
 
-class email_otpSerializer(serializers.ModelSerializer ):
+
+class EmailOTPSerializer(serializers.ModelSerializer):
+    """Serializer for EmailOTP model."""
     class Meta:
-        model =EmailOTP
-        fields=('id','email','date_verify'
-                )
+        model = EmailOTP
+        fields = ("id", "email", "date_verify")

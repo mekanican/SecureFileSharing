@@ -1,9 +1,11 @@
 
 from django.db import models
 
-#auth_user board
+
 class EmailOTP(models.Model):
-    id= models.BigAutoField(primary_key=True,unique=True,null=False)
-    email=models.CharField(max_length=254,null=False)
-    date_verify=models.DateTimeField(blank=True,null=True)
-  
+    """Model for EmailOTP."""
+
+    # null = False is the default, so we don't need to specify it.
+    id = models.BigAutoField(primary_key=True, unique=True)
+    email = models.CharField(max_length=254)
+    date_verify = models.DateTimeField(blank=True, null=True)

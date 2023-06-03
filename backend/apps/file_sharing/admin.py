@@ -1,5 +1,6 @@
+# pylint: disable=wrong-import-order
+
 from apps.file_sharing.models import FileSharing
 from django.contrib import admin
 
-# Register your models here.
 admin.site.register(FileSharing)
