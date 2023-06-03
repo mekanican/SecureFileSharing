@@ -1,5 +1,5 @@
 [MASTER]
 
-disable=C0114,C0115,C0116
+disable=C0114,C0115,C0116,wrong-import-order,too-few-public-methods,no-member
 ignore=migrations,types.py
 ignore-paths=.*/migrations/*
