@@ -11,7 +11,7 @@ class RSAPublicKeySerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = RSAPublicKey
-        fields = ["n", "e", "user"]
+        fields = ("n", "e", "user")
 
 
 class RSAPrivateKeySerializer(serializers.ModelSerializer):
@@ -21,4 +21,4 @@ class RSAPrivateKeySerializer(serializers.ModelSerializer):
         """Meta class."""
 
         model = RSAPrivateKey
-        fields = ["p", "q", "d", "user"]
+        fields = ("p", "q", "d", "user")

@@ -11,8 +11,11 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 # pylint: disable=line-too-long
 import os
-from datetime import timedelta
 from pathlib import Path
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-9g#5$l=a+x^ti-n3&olyioq-98qi&$$or81ri-es(_ss#q1y$6"  # noqa: E501
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")  # noqa: E501
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -48,14 +51,14 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.email_otp",
     "apps.keys_handler",
-   
+
 ]
 
-FILE_UPLOAD_HANDLERS= [
-     
+FILE_UPLOAD_HANDLERS = [
     "django.core.files.uploadhandler.MemoryFileUploadHandler",
     "django.core.files.uploadhandler.TemporaryFileUploadHandler",
 ]
+
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -72,7 +75,10 @@ ROOT_URLCONF = "urls.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, '/apps/email_otp/templates'),os.path.join(BASE_DIR, '/apps/file_sharing/templates')],
+        "DIRS": [
+            os.path.join(BASE_DIR, '/apps/email_otp/templates'),
+            os.path.join(BASE_DIR, '/apps/file_sharing/templates'),
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -87,22 +93,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
-
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "file_sharing",
-        "USER": "file_sharing",
-        "PASSWORD": "file_sharing",
-        "HOST": "127.0.0.1",
-        "PORT": "3306",
-   
-        # "OPTIONS": {
-        #     "init_command": "SET sql_mode="STRICT_TRANS_TABLES""
-        # }
+        "NAME": os.getenv("DATABASE_NAME"),
+        "USER": os.getenv("DATABASE_USER"),
+        "PASSWORD": os.getenv("DATABASE_PASSWORD"),
+        "HOST": os.getenv("DATABASE_HOST"),
+        "PORT": os.getenv("DATABASE_PORT"),
     },
 }
 
@@ -158,17 +158,14 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.BasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
-        "rest_framework_simplejwt.authentication.JWTAuthentication",    
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'securefilesharingsp@gmail.com'
-EMAIL_HOST_PASSWORD = 'pajprkhfefrplgin' #past the key or password app here
-EMAIL_PORT = 587
+EMAIL_HOST_USER = os.getenv("SERVER_EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("SERVER_EMAIL_HOST_PASSWORD")
+EMAIL_PORT = os.getenv("SERVER_EMAIL_PORT")
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "securefilesharingsp@gmail.com"
-
-CHAT_SERVICE_HOST = "localhost"
-CHAT_SERVICE_PORT = "23432"  # TODO: Export to env
+DEFAULT_FROM_EMAIL = os.getenv("SERVER_DEFAULT_FROM_EMAIL")
