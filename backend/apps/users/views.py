@@ -1,6 +1,5 @@
 
 # pylint: disable=no-member,broad-exception-caught
-from asgiref.sync import async_to_sync, sync_to_async
 from django.contrib.auth import authenticate, get_user_model
 from rest_framework import status
 from rest_framework.authtoken.models import Token
@@ -19,13 +18,13 @@ class UserRegisterView(APIView):
 
     def post(self, request) -> Response:
 
-        cloneRequest = request
-        serializer = UserSerializer(data=cloneRequest.data)
+        clone_request = request
+        serializer = UserSerializer(data=clone_request.data)
         if serializer.is_valid():
             user = serializer.save()
             email_otp = EmailOTP(id=user.id, email=user.email)
             email_otp.save()
-            SendEmailHandler.SendMail(cloneRequest, user)
+            SendEmailHandler.send_mail(clone_request, user)
             return Response(
                 {"user_id": user.id},
                 status=status.HTTP_201_CREATED,
@@ -45,9 +44,8 @@ class UserLoginView(APIView):
         user = authenticate(username=username, password=password)
 
         try:
-            q1 = User.objects.get(username=user)
-            email_otp = EmailOTP.objects.get(id=q1.id, email=q1.email)
-            # print(email_otp.date_verify)
+            query1 = User.objects.get(username=user)
+            email_otp = EmailOTP.objects.get(id=query1.id, email=query1.email)
         except User.DoesNotExist:
             return Response(
                 {"error": "Invalid username"},
@@ -63,14 +61,15 @@ class UserLoginView(APIView):
                 },
                 status=status.HTTP_200_OK,
             )
-        else:
-            if user:
-                return  Response(
-                {"error":"Unverified email"},
-                status=status.HTTP_400_BAD_REQUEST,)
 
-        return  Response(
-            {"error":"Invalid credentials"},
+        if user:
+            return Response(
+                {"error": "Unverified email"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return Response(
+            {"error": "Invalid credentials"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 

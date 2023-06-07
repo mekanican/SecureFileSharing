@@ -27,11 +27,17 @@
   "python.formatting.provider": "none",
   "[python]": {
     "editor.formatOnSave": true,
+    // Auto organize imports on save
     "editor.codeActionsOnSave": {
       "source.organizeImports": true
     }
   },
   "cSpell.words": [
+    "authtoken",
+    "Filesharing",
+    "gmpy",
+    "livereload",
+    "minio",
     "primality"
   ]
 }
