@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -24,6 +25,7 @@ class _ChatPageState extends State<ChatPage> {
   final _user = const types.User(id: '82091008-a484-4a89-ae75-a22bf8d6f3ac');
   @override
   Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: Text("Chat")),
     body: Chat(
           messages: _messages,
           onSendPressed: _handleSendPressed,
@@ -61,6 +63,11 @@ class _ChatPageState extends State<ChatPage> {
     );
 
     if (result != null && result.files.single.path != null) {
+
+      var file = File(result.files.single.path!);
+
+      var data = await file.readAsBytes();
+
       final message = types.FileMessage(
         author: _user,
         createdAt: DateTime.now().millisecondsSinceEpoch,

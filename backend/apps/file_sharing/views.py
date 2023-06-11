@@ -201,7 +201,7 @@ class ChatHandler(APIView):
                 from_user=to_id,
                 to_user=user.id,
             ),
-        ).order_by("uploaded_at").values()
+        ).order_by("-uploaded_at").values()
 
         result = list(queryset)
 
