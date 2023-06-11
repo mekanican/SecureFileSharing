@@ -221,11 +221,11 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 # Public Key Getting API
 ## API Endpoint
-`GET /api/keys/get?token=<token>`
+`GET /api/keys/get?token=<your-token>&id=<id-of-user-you-need>`
 
 ## Example
 
-`/api/keys/get?token=6ef59d81bd7c499658ec25b9f030077e352bb235`
+`/api/keys/get?token=6ef59d81bd7c499658ec25b9f030077e352bb235&id=1`
 
 # Upload file API
 
