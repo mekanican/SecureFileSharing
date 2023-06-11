@@ -3,6 +3,7 @@ import math
 import random
 
 from apps.keys_handler.prime_numbers_handler import generate_large_prime_number
+from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
@@ -10,6 +11,8 @@ from rest_framework.views import APIView
 
 from .models import RSAPublicKey
 from .serializers import RSAPrivateKeySerializer, RSAPublicKeySerializer
+
+User = get_user_model()
 
 
 class RSAKeyGenerateView(APIView):
@@ -78,10 +81,37 @@ class RSAPublicKeyGetAPIView(APIView):
 
     def get(self, request):
         user_token = request.query_params.get("token")
-        user = Token.objects.get(key=user_token).user
+        try:
+            _ = Token.objects.get(key=user_token).user
+        except Token.DoesNotExist:
+            return Response(
+                {
+                    "error": "Invalid token",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user_id = request.query_params.get("id")
+        if not user_id:
+            return Response(
+                {
+                    "error": "User id not provided",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
-            public_key = RSAPublicKey.objects.get(user=user)
+            user_with_that_id = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            return Response(
+                {
+                    "error": "User not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        try:
+            public_key = RSAPublicKey.objects.get(user=user_with_that_id)
         except RSAPublicKey.DoesNotExist:
             return Response(
                 {
