@@ -13,7 +13,7 @@ class LoginPage extends StatelessWidget {
     var userState = context.watch<UserState>();
     var userController = UserController(userState);
     return FlutterLogin(
-      onLogin: userController.dummySignIn, // TODO: Replace with  userController.signIn
+      onLogin: userController.signIn, 
       onRecoverPassword: (_){},
       onSignup: userController.signUp,
       logo: AssetImage("logo/logo_icon.png"),
