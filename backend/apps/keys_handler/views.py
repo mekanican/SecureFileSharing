@@ -8,6 +8,7 @@ from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from .models import RSAPublicKey
 from .serializers import RSAPrivateKeySerializer, RSAPublicKeySerializer
 
 
@@ -44,6 +45,13 @@ class RSAKeyGenerateView(APIView):
             public_key_serializer.is_valid() and
             private_key_serializer.is_valid()
         ):
+            # Find if this user has already generated public key,
+            # if yes, delete it
+            try:
+                RSAPublicKey.objects.get(user=user).delete()
+            except RSAPublicKey.DoesNotExist:
+                pass
+
             public_key_serializer.save()
 
             return Response(
@@ -62,4 +70,33 @@ class RSAKeyGenerateView(APIView):
                 "error": "Internal server error",
             },
             status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+class RSAPublicKeyGetAPIView(APIView):
+    """API view for getting RSA public key for a user."""
+
+    def get(self, request):
+        user_token = request.query_params.get("token")
+        user = Token.objects.get(key=user_token).user
+
+        try:
+            public_key = RSAPublicKey.objects.get(user=user)
+        except RSAPublicKey.DoesNotExist:
+            return Response(
+                {
+                    "error": "Public key not found",
+                },
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        return Response(
+            {
+                "message": "Public key found",
+                "public_key": {
+                    "n": public_key.n,
+                    "e": public_key.e,
+                },
+            },
+            status=status.HTTP_200_OK,
         )
