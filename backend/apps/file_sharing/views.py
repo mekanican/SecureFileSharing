@@ -228,7 +228,7 @@ class FriendHandler(APIView):
             SELECT tmp_table.*, auth_user.username
             FROM
                 (
-                    SELECT
+                    SELECT DISTINCT
                         MAX(file_sharing_filesharing.uploaded_at),
                         file_sharing_filesharing.to_user_id AS 'friend_id'
                     FROM
@@ -238,7 +238,7 @@ class FriendHandler(APIView):
                     GROUP BY
                         friend_id
                 UNION
-                    SELECT
+                    SELECT DISTINCT
                         MAX(file_sharing_filesharing.uploaded_at),
                         file_sharing_filesharing.from_user_id AS 'friend_id'
                     FROM
@@ -251,14 +251,23 @@ class FriendHandler(APIView):
             INNER JOIN
                 auth_user ON auth_user.id = tmp_table.friend_id
             """, {"id": user.id})
+
+            # For each friend, if occur more than once in the query
+            # (means that there's a message from both side)
+            # then we only take the latest one
+            query_result = {}
             for i in cursor.fetchall():
+                if i[1] not in query_result:
+                    query_result[i[1]] = i
+
+            for i in query_result.values():
                 result.append({
                     "friend_id": i[1],
                     "uploaded_at": i[0].strftime("%Y-%m-%dT%H:%M:%S"),
-                    "username": i[2]
+                    "username": i[2],
                 })
 
         return Response(
             result,
-            status=status.HTTP_200_OK
+            status=status.HTTP_200_OK,
         )
