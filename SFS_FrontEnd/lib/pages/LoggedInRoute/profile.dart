@@ -5,8 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sfs_frontend/helper/datetime.dart';
+import 'package:sfs_frontend/helper/file_handler.dart';
+import 'package:sfs_frontend/services/user_state.dart';
 import 'package:widget_circular_animator/widget_circular_animator.dart';
+
+import '../../services/key_controller.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -19,8 +24,10 @@ class _ProfilePageState extends State<ProfilePage> {
   // final textController = TextEditingController();
 
   final usrController = TextEditingController();
-  final emailController = TextEditingController();
+  final tokenController = TextEditingController();
   final statusController = TextEditingController();
+  late UserState userState;
+  late KeyController keyController;
 
   var isUsernameChanged = false;
 
@@ -28,7 +35,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void dispose() {
     usrController.dispose();
-    emailController.dispose();
+    tokenController.dispose();
     statusController.dispose();
     super.dispose();
   }
@@ -39,34 +46,34 @@ class _ProfilePageState extends State<ProfilePage> {
     // On create dialog!,
     // Todo: Change to api request to check for user first appearance
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      await _showDialogRequestKey(!await checkFirstTime());
+      await setInitialProfileData();
+      await _showDialogRequestKey(!await checkExistKeyPair());
     });
-    setInitialProfileData();
   }
 
-  Future<bool> checkFirstTime() async {
-    // This will be checked by testing key file is represent on this computer
-    Directory dir = await getApplicationSupportDirectory();
-    String path = dir.path;
-    const String fileName = "key.json";
-    return File("$path/$fileName").exists();
-  }
 
   Future<void> setInitialProfileData() async {
-    usrController.text = "Unknown";
-    emailController.text = "mrX@example.com";
+    userState = Provider.of<UserState>(context, listen: false);
+    keyController = KeyController(userState);
+
+    usrController.text = userState.username;
+    tokenController.text = userState.token;
     statusController.text = "Not assigned"; // Assigned at 01/01/2069
   }
 
-
+  void handleKey() async {
+    var keypair = await keyController.getKeyPair();
+    setPubKey(keypair.fs);
+    setPrivKey(keypair.nd);
+  }
 
   Future<String?> _showDialogRequestKey(bool isFirstTime) async {
-
     Text content;
     if (isFirstTime) {
       content = const Text("Welcome to your first login to our system!\nDo you want to create the new key (must have to start sending file)?\nThe request may take a few second");
     } else {
       content = const Text("It seems like you want to change the key!\nFiles you received in the past will not be accessible forever.\nContinue?");
+      statusController.text = "Assigned";
     }
 
     return showDialog<String>(
@@ -84,9 +91,9 @@ class _ProfilePageState extends State<ProfilePage> {
               child: const Text('Cancel'),
             ),
             TextButton(
-              onPressed: () {
-                print('OK');
-                statusController.text = "Assigned at ${getCurrentDate()}";
+              onPressed: () async {
+                handleKey();
+                statusController.text = "Assigned";
                 Navigator.of(context).pop();
               },
               child: const Text('OK'),
@@ -124,25 +131,27 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(children: [
                   TextField(
                     controller: usrController,
+                    readOnly: true,
+                    enabled: false,
                     decoration: const InputDecoration(
                       labelText: "Username",
                       border: OutlineInputBorder()
                     ),
-                    onChanged: (_) => {
-                      if (!isUsernameChanged) {
-                        setState(() => {
-                          isUsernameChanged = true
-                        })
-                      }
-                    },
+                    // onChanged: (_) => {
+                    //   if (!isUsernameChanged) {
+                    //     setState(() => {
+                    //       isUsernameChanged = true
+                    //     })
+                    //   }
+                    // },
                   ),
                   SizedBox(height: 10),
                   TextField(
-                    controller: emailController,
+                    controller: tokenController,
                     readOnly: true,
                     enabled: false,
                     decoration: const InputDecoration(
-                      labelText: "Email",
+                      labelText: "Token",
                       border: OutlineInputBorder()
                     ),
                   ),
@@ -158,7 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   SizedBox(height: 10),
                   Row(children: [
-                    if (isUsernameChanged) TextButton(onPressed: () => {}, child: Text("Update profile")),
+                    // if (isUsernameChanged) TextButton(onPressed: () => {}, child: Text("Update profile")),
                     TextButton(onPressed: () async => _showDialogRequestKey(false), child: Text("Change key")),
                   ],)
                 ]),
