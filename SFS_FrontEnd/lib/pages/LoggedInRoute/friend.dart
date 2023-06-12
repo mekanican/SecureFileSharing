@@ -110,7 +110,7 @@ class _FriendListPageState extends State<FriendListPage> {
                       openElevation: 4.0,
                       transitionDuration: Duration(milliseconds: 1500),
                       openBuilder: (BuildContext context, VoidCallback _) =>
-                          ChatPage(),
+                          ChatPage(other_id: 0),
                       closedBuilder:
                           (BuildContext _, VoidCallback openContainer) {
                         return ListTile(

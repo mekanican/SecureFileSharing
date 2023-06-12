@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class ChatMessage {
@@ -19,11 +22,16 @@ class ChatMessage {
     RegExpMatch? match = r.firstMatch(url);
     return match![0]!;
   }
+  String randomString() {
+    final random = Random.secure();
+    final values = List<int>.generate(16, (i) => random.nextInt(255));
+    return base64UrlEncode(values);
+  }
 
   types.FileMessage toFileMessage() {
     return types.FileMessage(
       author: types.User(id: from_id.toString()), 
-      id: to_id.toString(), 
+      id: randomString(), 
       name: _url2filename(), 
       size: 1234, 
       uri: url
