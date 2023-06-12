@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:sfs_frontend/helper/socketio_handler.dart';
 import 'package:sfs_frontend/models/friend_clone.dart';
 import 'package:sfs_frontend/pages/LoggedInRoute/chat.dart';
 import 'package:sfs_frontend/services/friend_clone_controller.dart';
@@ -21,36 +22,36 @@ class _FriendListPageState extends State<FriendListPage> {
   late UserState userState;
   late FriendController friendController;
   List<Friend> _listFriend = []; //local state for search
-  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      userState = Provider.of<UserState>(context, listen: false);
+      friendController = FriendController(userState);
+      var sk = Socket();
+      var current_id = userState.userId;
+      sk.sk.on("Reload $current_id", (data) async => await refresh());
+      await refresh();
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timer?.cancel();
   }
 
-  void refresh() async {
-    var l = await friendController.getListFriend();
-    print(l);
-    setState(() {
-      _listFriend = l;
-    });
+  Future<void> refresh() async {
+    if (this.mounted) {
+      var l = await friendController.getListFriend();
+      setState(() {
+        _listFriend = l;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    userState = context.watch<UserState>();
-    friendController = FriendController(userState);
-
-    _timer = Timer.periodic(const Duration(seconds: 20), (_) async {
-      refresh();
-    });
-
     return Scaffold(
         appBar: AppBar(
           title: TextField(
@@ -63,7 +64,7 @@ class _FriendListPageState extends State<FriendListPage> {
           ),
         ),
         body: RefreshIndicator(
-            onRefresh: () async => refresh(),
+            onRefresh: () async => await refresh(),
             child: ListView.builder(
               itemCount: _listFriend.length,
               itemBuilder: (context, index) {
@@ -81,7 +82,7 @@ class _FriendListPageState extends State<FriendListPage> {
                     openElevation: 4.0,
                     transitionDuration: Duration(milliseconds: 1500),
                     openBuilder: (BuildContext context, VoidCallback _) =>
-                        ChatPage(),
+                        ChatPage(other_id: friend.id),
                     closedBuilder:
                         (BuildContext _, VoidCallback openContainer) {
                       return ListTile(

@@ -30,6 +30,9 @@ class KeyController {
 
     var response = await dio.get("/keys/get?token=$token&id=$user_id");
     Map<String, dynamic> data = response.data;
+    if (data.containsKey("error")) {
+      throw Error();
+    }
     Map<String, dynamic> pubkey = data["public_key"];
     return RSAPublicKey.fromJSON(pubkey.cast<String, String>());
   }
