@@ -40,6 +40,7 @@ Future<RSAPrivateKey> getPrivKey() async {
 
 void setPubKey(RSAPublicKey p) async {
   final base = await _localPath;
+  print(base);
   var a = File(base + pubkeyName);
 
   var data = jsonEncode(p.toJson());

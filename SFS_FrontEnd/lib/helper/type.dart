@@ -24,3 +24,10 @@ Bytes writeBigInt(BigInt number) {
     }
     return result;
   }
+
+
+class Pair<T1, T2> {
+  final T1 fs;
+  final T2 nd;
+  Pair(this.fs, this.nd);
+}
