@@ -26,7 +26,7 @@ MINIO_HANDLER = MinioHandler.get_instance()
 
 load_dotenv()  # Load environment variables from .env file
 
-CHAT_SERVICE_URL = os.getenv("CHAT_SERVICE_URL")
+CHAT_SERVICE_URL = "http://127.0.0.1:23432" # os.getenv("CHAT_SERVICE_URL")
 
 
 def notifier(user1: int, user2: int) -> None:
