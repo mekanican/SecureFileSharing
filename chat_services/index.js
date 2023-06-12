@@ -4,6 +4,7 @@ const Server = require("socket.io").Server;
 const io = new Server(3400, {logger: true}); // Socket port for Flutter, GLOBAL
 
 io.on("connection", socket => {
+    console.log("init connection")
     socket.emit("handshake", "OK");
 })
 

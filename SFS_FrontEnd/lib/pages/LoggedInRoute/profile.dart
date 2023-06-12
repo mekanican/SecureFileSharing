@@ -46,25 +46,25 @@ class _ProfilePageState extends State<ProfilePage> {
     // On create dialog!,
     // Todo: Change to api request to check for user first appearance
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      userState = Provider.of<UserState>(context, listen: false);
+      keyController = KeyController(userState);
+
       await setInitialProfileData();
-      await _showDialogRequestKey(!await checkExistKeyPair());
+      await _showDialogRequestKey(!await checkExistKeyPair(userState.userId));
     });
   }
 
 
   Future<void> setInitialProfileData() async {
-    userState = Provider.of<UserState>(context, listen: false);
-    keyController = KeyController(userState);
-
     usrController.text = userState.username;
     tokenController.text = userState.token;
     statusController.text = "Not assigned"; // Assigned at 01/01/2069
   }
 
-  void handleKey() async {
+  Future<void> handleKey() async {
     var keypair = await keyController.getKeyPair();
-    setPubKey(keypair.fs);
-    setPrivKey(keypair.nd);
+    setPubKey(keypair.fs, userState.userId);
+    setPrivKey(keypair.nd, userState.userId);
   }
 
   Future<String?> _showDialogRequestKey(bool isFirstTime) async {
