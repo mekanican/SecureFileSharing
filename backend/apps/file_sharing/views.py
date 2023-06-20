@@ -19,6 +19,8 @@ from rest_framework.views import APIView
 
 from .models.filesharing import FileSharing
 from .serializers import FileSharingSerializer
+from apps.friend_request.models import FriendList
+from django.db.models import Q
 
 User = get_user_model()
 
@@ -267,6 +269,20 @@ class FriendHandler(APIView):
                     "username": i[2],
                 })
 
+        # add friend that haven't chat
+        if FriendList.objects.filter(Q(user_idA=user.id) | Q(user_idB=user.id)).exists():
+            friend_list= FriendList.objects.filter(Q(user_idA=user.id) | Q(user_idB=user.id))
+            for rows in friend_list.values():        
+                userA= User.objects.get(id=rows['user_idA'])
+                userB= User.objects.get(id=rows['user_idB'])
+                temp_user= userA if(userA.id!=user.id) else userB
+                if not any(item["friend_id"] == temp_user.id for item in result):
+                   result.append({
+                    "friend_id": temp_user.id,
+                    "uploaded_at": "",
+                    "username": temp_user.get_username(),
+                    })
+                        
         return Response(
             result,
             status=status.HTTP_200_OK,

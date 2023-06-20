@@ -22,7 +22,8 @@ class _FriendListPageState extends State<FriendListPage> {
   late UserState userState;
   late FriendController friendController;
   List<Friend> _listFriend = []; //local state for search
-
+  Timer? _timer;
+  String _inputText = '';
   @override
   void initState() {
     super.initState();
@@ -34,10 +35,14 @@ class _FriendListPageState extends State<FriendListPage> {
       sk.sk.on("Reload $current_id", (data) async => await refresh());
       await refresh();
     });
+    _timer = null;
   }
 
   @override
   void dispose() {
+    if (_timer != null) {
+      _timer?.cancel();
+    }
     super.dispose();
   }
 
@@ -45,9 +50,40 @@ class _FriendListPageState extends State<FriendListPage> {
     if (this.mounted) {
       var l = await friendController.getListFriend();
       setState(() {
-        _listFriend = l;
+        _listFriend = _filterFriends(l);
       });
     }
+  }
+
+  List<Friend> _filterFriends(List<Friend> friends) {
+    try {
+      final query = _searchController.text;
+      if (query.isEmpty) {
+        return friends;
+      } else {
+        return friends
+            .where((friend) =>
+                friend.name.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+    } catch (err) {
+      return friends;
+    }
+  }
+
+  //bounding for input
+  void _onTextChanged(String newText) {
+    if (_timer != null) {
+      _timer?.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: 300), () {
+      // Code to be executed after 300ms delay
+      refresh();
+    });
+  }
+
+  void _onCloseContainer(Object? arg) {
+    refresh();
   }
 
   @override
@@ -56,7 +92,7 @@ class _FriendListPageState extends State<FriendListPage> {
         appBar: AppBar(
           title: TextField(
             controller: _searchController,
-            // onChanged: (_) => _pagingController.refresh(),
+            onChanged: _onTextChanged,
             decoration: InputDecoration(
               hintText: 'Search friends',
               border: InputBorder.none,
@@ -69,9 +105,8 @@ class _FriendListPageState extends State<FriendListPage> {
               itemCount: _listFriend.length,
               itemBuilder: (context, index) {
                 final friend = _listFriend[index];
-                final avatar = friend.name.isNotEmpty
-                    ? friend.name[0].toUpperCase()
-                    : '';
+                final avatar =
+                    friend.name.isNotEmpty ? friend.name[0].toUpperCase() : '';
                 return Card(
                   color: Colors.white,
                   elevation: 2.0,
@@ -88,8 +123,10 @@ class _FriendListPageState extends State<FriendListPage> {
                       return ListTile(
                         leading: CircleAvatar(child: Text(avatar)),
                         title: Text(friend.name),
-                        subtitle: Text(
-                            'Last message at ${friend.lastMessageAt.toString()}'),
+                        subtitle: friend.lastMessageAt.toString() != "null"
+                            ? Text(
+                                'Last message at ${friend.lastMessageAt.toString()}')
+                            : Text(''),
                       );
                     },
                   ),
@@ -120,6 +157,7 @@ class _FriendListPageState extends State<FriendListPage> {
               ),
             );
           },
+          onClosed: _onCloseContainer,
         ));
   }
 }

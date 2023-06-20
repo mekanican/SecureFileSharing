@@ -1,7 +1,7 @@
 class Friend {
   final int id;
   final String name;
-  final DateTime lastMessageAt;
+  final DateTime? lastMessageAt;
 
   Friend({
     required this.id,

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class Socket {
@@ -11,11 +11,8 @@ class Socket {
   late IO.Socket sk;
 
   Socket._internal() {
-    sk = IO.io("http://localhost:3400", 
-      IO.OptionBuilder()
-      .setTransports(['websocket'])
-      .build()
-    );
+    sk = IO.io(dotenv.env['SOCKET_URL'] ?? "http://localhost:3400",
+        IO.OptionBuilder().setTransports(['websocket']).build());
     sk.onDisconnect((data) => print("Disconnect"));
   }
 }
