@@ -11,6 +11,9 @@ from .models import FriendRequest,FriendList
 import string
 import random
 
+from ..file_sharing.models import FileSharing
+from datetime import datetime
+
 User = get_user_model()
 load_dotenv()  # Load environment variables from .env file
 
@@ -116,8 +119,23 @@ class AddFriendCode(APIView):
         friend_username= payload['request_id']
         friend_id= User.objects.get(username=friend_username).id
 
-        if not FriendList.objects.filter(user_idA=user.id,user_idB=friend_id).exists() and not FriendList.objects.filter(user_idA=friend_id,user_idB=user.id).exists():
-            FriendList.objects.create(user_idA=user.id,user_idB=friend_id,status="active")
+        # if not FriendList.objects.filter(user_idA=user.id,user_idB=friend_id).exists() and not FriendList.objects.filter(user_idA=friend_id,user_idB=user.id).exists():
+        #     FriendList.objects.create(user_idA=user.id,user_idB=friend_id,status="active")
+        #     return Response({"messages": "success"}, status=status.HTTP_200_OK)
+        # else:
+        #     return Response({"messages":"Friend exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+        if not FileSharing.objects.filter(from_user=user.id, to_user=friend_id).exists() and \
+            not FileSharing.objects.filter(from_user=friend_id, to_user=user.id).exists():
+            # First time
+            file = FileSharing()
+            file.from_user = user
+            file.to_user = User.objects.get(id=friend_id)
+            file.file_name = "Hello"
+            file.url = "http://Hello.com"
+            file.uploaded_at = datetime.now()
+            file.save()
             return Response({"messages": "success"}, status=status.HTTP_200_OK)
         else:
             return Response({"messages":"Friend exist"}, status=status.HTTP_400_BAD_REQUEST)
