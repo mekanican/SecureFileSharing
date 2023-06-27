@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\flutter\bin\kompose.exe convert --push-image-registry sfs2023.azurecr.io
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: chat-service
+  name: chat-service
+spec:
+  ports:
+    - name: "3400"
+      port: 3400
+      targetPort: 3400
+    - name: "23432"
+      port: 23432
+      targetPort: 23432
+  selector:
+    io.kompose.service: chat-service
+status:
+  loadBalancer: {}

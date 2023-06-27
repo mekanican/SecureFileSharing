@@ -12,8 +12,8 @@ services:
       - MYSQL_USER=file_sharing
       - MYSQL_PASSWORD=file_sharing
     volumes:
-      # - ./DB/schema.sql:/docker-entrypoint-initdb.d/1.sql
-      # - ./DB/data.sql:/docker-entrypoint-initdb.d/2.sql
+      - ./DB/schema.sql:/docker-entrypoint-initdb.d/1.sql
+      - ./DB/data.sql:/docker-entrypoint-initdb.d/2.sql
       - mysql_volume:/var/lib/mysql
     healthcheck:
       test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
@@ -22,32 +22,60 @@ services:
     expose:
       - "3306"
 
-  minio:
+  minio1:
     image: minio/minio:RELEASE.2023-03-24T21-41-23Z
     volumes:
-      - minio-storage:/data
-    # expose:
-    #   - "9000"
-    ports:
-      - "9000:9000"
-      - "9001:9001"
+      - ./FileStorage/minio/data1-1:/data1
+      - ./FileStorage/minio/data1-2:/data2
+    expose:
+      - "9000"
     environment:
       MINIO_ACCESS_KEY: admin
       MINIO_SECRET_KEY: password@123
-    command: server /data --console-address ":9001"
+    command: server http://minio{1...2}/data{1...2}
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
       interval: 30s
       timeout: 20s
       retries: 10
 
+  minio2:
+    image: minio/minio:RELEASE.2023-03-24T21-41-23Z
+    volumes:
+      - ./FileStorage/minio/data2-1:/data1
+      - ./FileStorage/minio/data2-2:/data2
+    expose:
+      - "9000"
+    environment:
+      MINIO_ACCESS_KEY: admin
+      MINIO_SECRET_KEY: password@123
+    command: server http://minio{1...2}/data{1...2}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 20s
+      retries: 10
+
+  minio-nginx:
+    build: 
+      context: ./nginx
+      dockerfile: Dockerfile
+    image: minio-nginx
+    expose:
+      - "9000"
+    ports:
+      - "9000:9000"
+    depends_on:
+      - minio1
+      - minio2
+
   django-backend:
     build: 
       context: ./backend
       dockerfile: Dockerfile
-    image: sfs2023.azurecr.io/django-image
+    image: django-image
     ports:
-      - "2234:8000"
+      - "80:8000"
     depends_on:
       mysql-database:
         condition: service_healthy
@@ -55,21 +83,21 @@ services:
         condition: service_started
       chat-service:
         condition: service_started
-      minio:
-        condition: service_healthy
+      minio-nginx:
+        condition: service_started
       
   detection:
     build: 
       context: ./addons
       dockerfile: Dockerfile
-    image: sfs2023.azurecr.io/detection-image
+    image: detection-image
     ports:
       - "9087:9087"
   chat-service:
     build:
       context: ./chat_services
       dockerfile: Dockerfile
-    image: sfs2023.azurecr.io/chat_service
+    image: chat_service
     expose:
       - "23432"
     ports:
@@ -78,4 +106,3 @@ services:
 # Specify volume (keep on each reload)
 volumes:
   mysql_volume:
-  minio-storage:
