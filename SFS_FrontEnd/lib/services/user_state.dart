@@ -3,16 +3,19 @@ import 'package:flutter/material.dart';
 class UserState extends ChangeNotifier {
   String username = "";
   String token = "";
+  int userId = 0;
 
-  void login(String newUserName, String newToken) {
+  void login(String newUserName, String newToken, int newUserId) {
     username = newUserName;
     token = newToken;
+    userId = newUserId;
     notifyListeners();
   }
 
   void logout() {
     username = "";
     token = "";
+    userId = 0;
     notifyListeners();
   }
 
@@ -26,5 +29,9 @@ class UserState extends ChangeNotifier {
 
   String getToken() {
     return token;
+  }
+
+  int getId() {
+    return userId;
   }
 }

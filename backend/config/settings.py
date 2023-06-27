@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     "apps.users",
     "apps.email_otp",
     "apps.keys_handler",
+    "apps.friend_request"
 
 ]
 

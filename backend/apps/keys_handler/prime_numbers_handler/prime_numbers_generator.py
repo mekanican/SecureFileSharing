@@ -7,7 +7,7 @@ from apps.keys_handler.prime_numbers_handler.prime_numbers_checker import (
 )
 from gmpy2 import mpz  # speedup calculating
 
-LENGTH_OF_PRIME_IN_BITS = 512
+LENGTH_OF_PRIME_IN_BITS = 128
 
 
 def generate_large_prime_number():

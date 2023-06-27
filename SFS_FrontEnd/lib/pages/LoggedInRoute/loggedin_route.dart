@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sfs_frontend/pages/GuestRoute/guest_route.dart';
-import 'package:sfs_frontend/pages/LoggedInRoute/chat.dart';
-import 'package:sfs_frontend/pages/LoggedInRoute/friend.dart';
+import 'package:sfs_frontend/pages/LoggedInRoute/friend_clone.dart';
 import 'package:sfs_frontend/pages/LoggedInRoute/profile.dart';
 import 'package:sfs_frontend/services/user_state.dart';
 
@@ -32,10 +31,10 @@ class _LoggedInRouteState extends State<LoggedInRoute> {
       case 1:
         page = FriendListPage();
         break;
+      // case 2:
+      //   page = ChatPage();
+      //   break;
       case 2:
-        page = ChatPage();
-        break;
-      case 4:
         page = ProfilePage();
         break;
       default:
@@ -62,9 +61,8 @@ class _LoggedInRouteState extends State<LoggedInRoute> {
         NavigationRailDestination(
             icon: Icon(Icons.supervised_user_circle),
             label: Text("List of friends")),
-        NavigationRailDestination(icon: Icon(Icons.chat), label: Text("Chat")),
+        NavigationRailDestination(icon: Icon(Icons.perm_device_information_outlined), label: Text("Profile")),
         NavigationRailDestination(icon: Icon(Icons.logout), label: Text("Log out")),
-        NavigationRailDestination(icon: Icon(Icons.perm_device_information_outlined), label: Text("Profile"))
       ],
       selectedIndex: selectedIndex,
       onDestinationSelected: (value) {
