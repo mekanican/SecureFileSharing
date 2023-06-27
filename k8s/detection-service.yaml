@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: C:\flutter\bin\kompose.exe convert --push-image-registry sfs2023.azurecr.io
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: detection
+  name: detection
+spec:
+  ports:
+    - name: "9087"
+      port: 9087
+      targetPort: 9087
+  selector:
+    io.kompose.service: detection
+status:
+  loadBalancer: {}
