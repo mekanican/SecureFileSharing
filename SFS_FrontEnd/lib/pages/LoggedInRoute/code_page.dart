@@ -1,6 +1,9 @@
-import 'package:sfs_frontend/services/friend_controller.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:sfs_frontend/services/friend_clone_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sfs_frontend/services/user_state.dart';
+import 'package:provider/provider.dart';
 
 class FriendCodePage extends StatefulWidget {
   @override
@@ -10,17 +13,30 @@ class FriendCodePage extends StatefulWidget {
 }
 
 class _FriendCodePage extends State<FriendCodePage> {
-  String ic = "";
+  final _searchController = TextEditingController();
+  late UserState userState;
+  late FriendController friendController;
+  late String _userInviteCode = "";
   final _inviteCodeController = TextEditingController();
-  String _userInviteCode = "";
-  final friendController = FriendController();
+
   @override
   void initState() {
     super.initState();
-    fetchInit();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      userState = Provider.of<UserState>(context, listen: false);
+      friendController = FriendController(userState);
+      getCode();
+    });
   }
 
-  void fetchInit() async {
+  void getCode() async {
+    String userCode = await friendController.getCode();
+    setState(() {
+      _userInviteCode = userCode;
+    });
+  }
+
+  void generateCode() async {
     String userCode = await friendController.generateCode();
     setState(() {
       _userInviteCode = userCode;
@@ -72,7 +88,18 @@ class _FriendCodePage extends State<FriendCodePage> {
                           ),
                         ));
               },
-              child: Text('Submit'),
+              child: Text('Add Friend'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                generateCode();
+              },
+              child: Text('Generate code'),
+              style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.white),
+                  foregroundColor:
+                      MaterialStateProperty.all<Color>(Colors.blue)),
             ),
           ],
         ),

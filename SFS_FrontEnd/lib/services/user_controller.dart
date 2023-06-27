@@ -33,9 +33,7 @@ class UserController {
         error = "${error!} $e";
       }
     } else {
-      // String userId = data["user_id"];
-      // userState.login(sData.name ?? '', userId);
-      error = "Register successfully, please log in";
+      error = "Register successfully, please verify email and log in";
     }
 
     return error;
@@ -55,13 +53,14 @@ class UserController {
       error = data["error"];
     } else {
       String token = data["token"];
-      userState.login(sData.name, token);
+      int userId = data["user_id"];
+      userState.login(sData.name, token, userId);
     }
     return error;
   }
 
   Future<String?> dummySignIn(_) async {
-    userState.login("abc", "xyz");
+    userState.login("abc", "xyz", 123);
     return null;
   }
 }

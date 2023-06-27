@@ -220,7 +220,9 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 `/api/keys/generate?token=6ef59d81bd7c499658ec25b9f030077e352bb235`
 
 # Public Key Getting API
+
 ## API Endpoint
+
 `GET /api/keys/get?token=<your-token>&id=<id-of-user-you-need>`
 
 ## Example
@@ -281,11 +283,11 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 {
-	"token": "ec4a3da295ca4030582f544062a56203ace7bf5c",
-	"to": 2,
-	"filename": "abc345.txt",
-	"myfile": "YWJjYWJjCg==",
-	"ttl": 3
+  "token": "ec4a3da295ca4030582f544062a56203ace7bf5c",
+  "to": 2,
+  "filename": "abc345.txt",
+  "myfile": "YWJjYWJjCg==",
+  "ttl": 3
 }
 ```
 
@@ -293,12 +295,13 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 {
-	"messages": "success",
-	"url": "http://localhost:9000/django-minio/01-06-2023_01-46-42___abc345.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20230601%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230601T014642Z&X-Amz-Expires=259200&X-Amz-SignedHeaders=host&X-Amz-Signature=d2319b640b0f56ce0067d00f0c0a101ba6a65b71e389bd43d0ff029c3520861d"
+  "messages": "success",
+  "url": "http://localhost:9000/django-minio/01-06-2023_01-46-42___abc345.txt?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=admin%2F20230601%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20230601T014642Z&X-Amz-Expires=259200&X-Amz-SignedHeaders=host&X-Amz-Signature=d2319b640b0f56ce0067d00f0c0a101ba6a65b71e389bd43d0ff029c3520861d"
 }
 ```
 
 ### Fail request
+
 # Get Friend
 
 ## API Endpoint
@@ -312,9 +315,9 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ## Request Body
 
-| Field    | Type   | Description                |
-| -------- | ------ | -------------------------- |
-| token | string | the token |
+| Field | Type   | Description |
+| ----- | ------ | ----------- |
+| token | string | the token   |
 
 ```json
   "token": "ec4a3da295ca4030582f544062a56203ace7bf5c"
@@ -324,14 +327,13 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ```json
 [
-	{
-		"friend_id": 2,
-		"uploaded_at": "2023-05-31T03:56:14",
-		"username": "nghia1"
-	}
+  {
+    "friend_id": 2,
+    "uploaded_at": "2023-05-31T03:56:14",
+    "username": "nghia1"
+  }
 ]
 ```
-
 
 # Get Chat
 
@@ -346,15 +348,15 @@ If the request is unsuccessful, the API will a `400 Bad request` with a JSON des
 
 ## Request Body
 
-| Field    | Type   | Description                |
-| -------- | ------ | -------------------------- |
-| token | string | the token |
-| to_id | int | receiver user id |
+| Field | Type   | Description      |
+| ----- | ------ | ---------------- |
+| token | string | the token        |
+| to_id | int    | receiver user id |
 
 ```json
 {
-	"token": "ec4a3da295ca4030582f544062a56203ace7bf5c",
-	"to_id": 2
+  "token": "ec4a3da295ca4030582f544062a56203ace7bf5c",
+  "to_id": 2
 }
 ```
 
@@ -364,12 +366,226 @@ If the request is successful, the API will return the following response:
 
 ```json
 [
-	{
-		"id": 2,
-		"from_user_id": 1,
-		"to_user_id": 2,
-		"url": "https://example.com",
-		"uploaded_at": "2023-05-30T14:43:46"
-	}
+  {
+    "id": 2,
+    "from_user_id": 1,
+    "to_user_id": 2,
+    "url": "https://example.com",
+    "uploaded_at": "2023-05-30T14:43:46"
+  }
 ]
+```
+
+# Generate User Friend Code
+
+This API allows user to generate `friend_code`,
+
+## API Endpoint
+
+`POST /api/friend/generate/`
+
+## Request Header
+
+`HTTP/1.1`
+`Content-Type: application/json`
+
+## Request Body
+
+| Field | Type   | Description   |
+| ----- | ------ | ------------- |
+| token | string | Token of user |
+
+## Response
+
+If the request is successful, the API will return the following response:
+
+```json
+{
+    "friend_code": <friend-code>
+}
+```
+
+with the status code `200 OK`.  
+If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
+
+## Example
+
+### Successful request
+
+#### Request
+
+```json
+{
+  "token": "1a02fa2ee7786cb2e152d5c1d0354f56597c8b4a"
+}
+```
+
+#### Response
+
+```json
+{
+  "friend_code": "ff72dtn2xb"
+}
+```
+
+### Failed request
+
+#### Request
+
+```json
+{
+  "token": "1a02fa2ee7786cb2e152d5c1d0354f56597c8b"
+}
+```
+
+#### Response
+
+```json
+{
+  "messages": "User not found"
+}
+```
+
+# Get User Friend Code
+
+This API allows user to get `friend_code`,
+
+## API Endpoint
+
+`POST /api/friend/get/`
+
+## Request Header
+
+`HTTP/1.1`
+`Content-Type: application/json`
+
+## Request Body
+
+| Field | Type   | Description   |
+| ----- | ------ | ------------- |
+| token | string | Token of user |
+
+## Response
+
+If the request is successful, the API will return the following response:
+
+```json
+{
+    "friend_code": <friend-code>
+}
+```
+
+with the status code `200 OK`.  
+If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
+
+## Example
+
+### Successful request
+
+#### Request
+
+```json
+{
+  "token": "1a02fa2ee7786cb2e152d5c1d0354f56597c8b4a"
+}
+```
+
+#### Response
+
+```json
+{
+  "friend_code": "ff72dtn2xb"
+}
+```
+
+### Failed request
+
+#### Request
+
+```json
+{
+  "token": "1a02fa2ee7786cb2e152d5c1d0354f56597c8b"
+}
+```
+
+#### Response
+
+```json
+{
+  "messages": "User not found"
+}
+```
+
+# Add Friend By Friend Code
+
+This API allows user to add friend by `friend_code`,
+
+## API Endpoint
+
+`POST /api/friend/add/`
+
+## Request Header
+
+`HTTP/1.1`
+`Content-Type: application/json`
+
+## Request Body
+
+| Field       | Type   | Description                 |
+| ----------- | ------ | --------------------------- |
+| token       | string | Token of user               |
+| friend_code | string | Friend code of another user |
+
+## Response
+
+If the request is successful, the API will return the following response:
+
+```json
+{
+    "token":<auth-token>,
+    "friend_code": <friend-code>
+}
+```
+
+with the status code `200 OK`.  
+If the request is unsuccessful, the API will a `400 Bad request` with a JSON describing the error.
+
+## Example
+
+### Successful request
+
+#### Request
+
+```json
+{
+  "token": "1a02fa2ee7786cb2e152d5c1d0354f56597c8b4a",
+  "friend_code": "htxv4at5o3"
+}
+```
+
+#### Response
+
+```json
+{
+  "messages": "success"
+}
+```
+
+### Failed request
+
+#### Request
+
+```json
+{
+  "token": "1a02fa2ee7786cb2e152d5c1d0354f56597c8b4a",
+  "friend_code": "htxv4at5o3"
+}
+```
+
+#### Response
+
+```json
+{
+  "messages": "Friend exist"
+}
 ```
