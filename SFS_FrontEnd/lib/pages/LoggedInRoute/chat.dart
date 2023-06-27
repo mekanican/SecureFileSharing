@@ -13,9 +13,11 @@ import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sfs_frontend/helper/file_handler.dart';
+import 'package:sfs_frontend/helper/md5.dart';
 import 'package:sfs_frontend/helper/rsa.dart';
 import 'package:sfs_frontend/helper/socketio_handler.dart';
 import 'package:sfs_frontend/services/chat_controller.dart';
+import 'package:sfs_frontend/services/detect_controller.dart';
 import 'package:sfs_frontend/services/key_controller.dart';
 import 'package:uuid/uuid.dart';
 
@@ -44,6 +46,8 @@ class _ChatPageState extends State<ChatPage> {
   late ChatController chatController;
   late KeyController keyController;
   late UploadController uploadController;
+
+  DetectController detectController = DetectController();
 
   @override
   void initState() {
@@ -134,6 +138,17 @@ class _ChatPageState extends State<ChatPage> {
     if (result != null && result.files.single.path != null) {
       var file = File(result.files.single.path!);
       var data = await file.readAsBytes();
+
+      var hash_data = MD5.getHash(data);
+      bool r = await detectController.detect(hash_data);
+      if (r) { //Malware -> skip 
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Malware detected, abort!"))
+          );
+        }
+        return;
+      }
 
       RSAPublicKey pubkey = await keyController.getOtherPubKey(widget.other_id);
       Data d = Chain.encrypt(pubkey, data);
