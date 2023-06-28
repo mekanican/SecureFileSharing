@@ -39,7 +39,7 @@ class MinioHandler:
             self.minio_url,
             access_key=self.access_key,
             secret_key=self.secret_key,
-            secure=False,
+            secure=True,
         )
         self.make_bucket()
 
