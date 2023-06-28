@@ -170,3 +170,10 @@ EMAIL_HOST_PASSWORD = os.getenv("SERVER_EMAIL_HOST_PASSWORD")
 EMAIL_PORT = os.getenv("SERVER_EMAIL_PORT")
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = os.getenv("SERVER_DEFAULT_FROM_EMAIL")
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://django.hcmusproject.live',
+    # other trusted origins
+]
+
+CSRF_COOKIE_SECURE = True

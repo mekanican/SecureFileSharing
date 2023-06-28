@@ -13,6 +13,7 @@ class Socket {
   Socket._internal() {
     sk = IO.io(dotenv.env['SOCKET_URL'] ?? "http://localhost:3400",
         IO.OptionBuilder().setTransports(['websocket']).build());
+    sk.onConnectError((data) => print(data.toString()));
     sk.onDisconnect((data) => print("Disconnect"));
   }
 }

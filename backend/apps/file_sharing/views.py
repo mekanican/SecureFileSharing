@@ -35,8 +35,14 @@ CHAT_SERVICE_URL = f"{CHAT_SERVICE_HOST}:{CHAT_SERVICE_PORT}"
 
 def notifier(user1: int, user2: int) -> None:
     """Notify both user 1 and 2 to reload their chat."""
-    requests.get(CHAT_SERVICE_URL + "/" + str(user1), timeout=5)
-    requests.get(CHAT_SERVICE_URL + "/" + str(user2), timeout=5)
+    try:
+        requests.get(CHAT_SERVICE_URL + "/" + str(user1), timeout=5)
+    except:
+        pass
+    try:
+        requests.get(CHAT_SERVICE_URL + "/" + str(user2), timeout=5)
+    except:
+        pass
 
 
 def is_base64(string_bytes) -> bool:
