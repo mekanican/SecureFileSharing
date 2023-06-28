@@ -90,3 +90,31 @@ class UserLogoutView(APIView):
         except Exception:
             # return error response
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class SuperUserRegisterView(APIView):
+    """API view to register a new superuser."""
+
+    def post(self, request) -> Response:
+        username = request.data.get("username")
+        password = request.data.get("password")
+        email = request.data.get("email")
+
+        # Check if the user already exists
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {"error": "Username already exists"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Create the superuser
+        superuser = User.objects.create_superuser(
+            username=username,
+            password=password,
+            email=email,
+        )
+
+        return Response(
+            {"user_id": superuser.id},
+            status=status.HTTP_201_CREATED,
+        )
