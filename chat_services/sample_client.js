@@ -1,7 +1,15 @@
 const io = require("socket.io-client").io;
 
 
-const socket = io("ws://localhost:3400")
+const socket = io("wss://chat.hcmusproject.live")
+
+socket.on("connect", () => {
+    console.log("Connect successfully")
+})
+
+socket.on("connect_error", (err) => {
+    console.log(`connect_error due to ${err.message}`);
+  });
 
 socket.on("handshake", msg => {
     console.log("Connected")

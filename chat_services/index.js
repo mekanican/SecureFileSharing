@@ -1,8 +1,11 @@
 const fastify = require('fastify')({ logger: true })
 const Server = require("socket.io").Server;
 
-const io = new Server(3400, {logger: true}); // Socket port for Flutter, GLOBAL
+const http = require('http');
+const server = http.createServer();
 
+// const io = new Server(3400, {logger: true}); // Socket port for Flutter, GLOBAL
+const io = new Server(server); // Socket port for Flutter, GLOBAL
 io.on("connection", socket => {
     console.log("init connection")
     socket.emit("handshake", "OK");
@@ -23,7 +26,11 @@ fastify.get('/:id', async (request, reply) => {
 // Run the server!
 const start = async () => {
     try {
-        await fastify.listen({ port: 23432 }) // Web PORT for Django, LOCAL
+        console.log("A");
+        server.listen(3400, "0.0.0.0");
+        console.log("A");
+        await fastify.listen({ host:"0.0.0.0", port: 23432 }) // Web PORT for Django, LOCAL
+        console.log("A");
     } catch (err) {
         fastify.log.error(err)
         process.exit(1)
