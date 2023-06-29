@@ -16,5 +16,6 @@ class UploadController {
       "myfile": b64data,
       "ttl": timeToLive
     });
+    print(response.data);
   }
 }
