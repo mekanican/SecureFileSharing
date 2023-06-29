@@ -28,21 +28,23 @@ MINIO_HANDLER = MinioHandler.get_instance()
 
 load_dotenv()  # Load environment variables from .env file
 
-CHAT_SERVICE_HOST = os.getenv("CHAT_SERVICE_HOST")
-CHAT_SERVICE_PORT = os.getenv("CHAT_SERVICE_PORT")
-CHAT_SERVICE_URL = f"{CHAT_SERVICE_HOST}:{CHAT_SERVICE_PORT}"
+# CHAT_SERVICE_HOST = os.getenv("CHAT_SERVICE_HOST")
+# CHAT_SERVICE_PORT = os.getenv("CHAT_SERVICE_PORT")
+CHAT_SERVICE_URL = os.getenv("CHAT_SERVICE_URL")
 
 
 def notifier(user1: int, user2: int) -> None:
     """Notify both user 1 and 2 to reload their chat."""
     try:
-        requests.get(CHAT_SERVICE_URL + "/" + str(user1), timeout=5)
-    except:
-        pass
+        requests.get(CHAT_SERVICE_URL + "/" + str(user1), timeout=8)
+    except Exception as e:
+        print(CHAT_SERVICE_URL + "/" + str(user1))
+        print(e)
     try:
-        requests.get(CHAT_SERVICE_URL + "/" + str(user2), timeout=5)
-    except:
-        pass
+        requests.get(CHAT_SERVICE_URL + "/" + str(user2), timeout=8)
+    except Exception as e:
+        print(CHAT_SERVICE_URL + "/" + str(user2))
+        print(e)
 
 
 def is_base64(string_bytes) -> bool:
