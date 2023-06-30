@@ -22,6 +22,7 @@ class ChatMessage {
     RegExpMatch? match = r.firstMatch(url);
     return match![0]!;
   }
+
   String randomString() {
     final random = Random.secure();
     final values = List<int>.generate(16, (i) => random.nextInt(255));
@@ -30,11 +31,10 @@ class ChatMessage {
 
   types.FileMessage toFileMessage() {
     return types.FileMessage(
-      author: types.User(id: from_id.toString()), 
-      id: randomString(), 
-      name: _url2filename(), 
-      size: 1234, 
-      uri: url
-    );
+        author: types.User(id: from_id.toString()),
+        id: randomString(),
+        name: _url2filename(),
+        size: 1234,
+        uri: url);
   }
 }

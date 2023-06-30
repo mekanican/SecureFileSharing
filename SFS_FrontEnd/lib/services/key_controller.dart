@@ -17,7 +17,6 @@ class KeyController {
     Map<String, dynamic> pubkey = keys["public"];
     Map<String, dynamic> privkey = keys["private"];
 
-
     return Pair(
       RSAPublicKey.fromJSON(pubkey.cast<String, String>()),
       RSAPrivateKey.fromJSON(privkey.cast<String, String>()),

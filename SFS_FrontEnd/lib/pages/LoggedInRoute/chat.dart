@@ -40,8 +40,8 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   List<types.Message> _messages = [];
 
-  late types.User user; 
-  
+  late types.User user;
+
   late UserState userState;
   late ChatController chatController;
   late KeyController keyController;
@@ -62,7 +62,7 @@ class _ChatPageState extends State<ChatPage> {
     user = types.User(id: user_id.toString());
     refresh();
   }
-  
+
   Future<void> refresh() async {
     if (this.mounted) {
       List<ChatMessage> l = await chatController.getChat(widget.other_id);
@@ -78,7 +78,7 @@ class _ChatPageState extends State<ChatPage> {
       appBar: AppBar(title: Text("Chat")),
       body: Chat(
         messages: _messages,
-        onSendPressed: (_){},
+        onSendPressed: (_) {},
         onAttachmentPressed: _handleFileSelection,
         onMessageTap: _handleMessageTap,
         user: user,
@@ -101,9 +101,9 @@ class _ChatPageState extends State<ChatPage> {
         try {
           // Load spinner
           final index =
-                _messages.indexWhere((element) => element.id == message.id);
+              _messages.indexWhere((element) => element.id == message.id);
           final updatedMessage =
-                (_messages[index] as types.FileMessage).copyWith(isLoading: true);
+              (_messages[index] as types.FileMessage).copyWith(isLoading: true);
           setState(() {
             _messages[index] = updatedMessage;
           });
@@ -141,11 +141,11 @@ class _ChatPageState extends State<ChatPage> {
 
       var hash_data = MD5.getHash(data);
       bool r = await detectController.detect(hash_data);
-      if (r) { //Malware -> skip 
+      if (r) {
+        //Malware -> skip
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Malware detected, abort!"))
-          );
+              const SnackBar(content: Text("Malware detected, abort!")));
         }
         return;
       }
@@ -153,10 +153,7 @@ class _ChatPageState extends State<ChatPage> {
       RSAPublicKey pubkey = await keyController.getOtherPubKey(widget.other_id);
       Data d = Chain.encrypt(pubkey, data);
       await uploadController.upload(
-        widget.other_id, 
-        result.files.single.name, 
-        d.toBase64()
-      );
+          widget.other_id, result.files.single.name, d.toBase64());
     }
   }
 }

@@ -6,8 +6,8 @@ import 'package:sfs_frontend/pages/GuestRoute/guest_route.dart';
 import 'package:sfs_frontend/services/user_state.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main()async {
-  await dotenv.load(fileName: "lib/.env"  );
+void main() async {
+  await dotenv.load(fileName: "lib/.env");
   runApp(const MyApp());
 }
 
