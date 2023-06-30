@@ -41,7 +41,7 @@ Future<RSAPrivateKey> getPrivKey(int id) async {
 
 void setPubKey(RSAPublicKey p, int id) async {
   final base = await _localPath;
-  print(base);
+  // print(base);
   var a = File("$base$pubkeyName.$id");
 
   var data = jsonEncode(p.toJson());
@@ -64,7 +64,7 @@ Future<void> downloadFile(String url, String filename) async {
   // Start the download
   try {
     await dio.download(url, "$base/$filename");
-    print('Download complete!');
+    // print('Download complete!');
   } catch (e) {
     print('Error downloading file: $e');
   }

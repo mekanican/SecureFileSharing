@@ -9,6 +9,7 @@ class Friend {
     required this.lastMessageAt,
   });
 
+  @override
   String toString() {
     return 'Friend(id: $id, name: $name, lastMessageAt: $lastMessageAt)';
   }

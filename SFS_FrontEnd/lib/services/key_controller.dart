@@ -23,11 +23,11 @@ class KeyController {
     );
   }
 
-  Future<RSAPublicKey> getOtherPubKey(int user_id) async {
+  Future<RSAPublicKey> getOtherPubKey(int userID) async {
     var dio = Dio(baseOptions);
     var token = userState.token;
 
-    var response = await dio.get("/keys/get?token=$token&id=$user_id");
+    var response = await dio.get("/keys/get?token=$token&id=$userID");
     Map<String, dynamic> data = response.data;
     if (data.containsKey("error")) {
       throw Error();

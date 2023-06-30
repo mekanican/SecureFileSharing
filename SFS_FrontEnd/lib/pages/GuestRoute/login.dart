@@ -14,9 +14,9 @@ class LoginPage extends StatelessWidget {
     var userController = UserController(userState);
     return FlutterLogin(
       onLogin: userController.signIn,
-      onRecoverPassword: (_) {},
+      onRecoverPassword: (_) => null,
       onSignup: userController.signUp,
-      logo: AssetImage("logo/logo_icon.png"),
+      logo: const AssetImage("logo/logo_icon.png"),
       userType: LoginUserType.name,
       additionalSignupFields: const [
         UserFormField(
@@ -28,7 +28,6 @@ class LoginPage extends StatelessWidget {
       ],
       userValidator: (_) => null,
       onSubmitAnimationCompleted: () {
-        print("Logged ${userState.getUsername()} in successfully");
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (context) => const LoggedInRoute(title: "Logged In")));
       },

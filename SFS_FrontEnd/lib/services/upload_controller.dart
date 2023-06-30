@@ -6,17 +6,16 @@ class UploadController {
   final UserState userState;
   UploadController(this.userState);
 
-  Future<void> upload(int other_id, String filename, String b64data,
+  Future<void> upload(int otherID, String filename, String b64data,
       {int timeToLive = 7}) async {
     var dio = Dio(baseOptions);
 
-    var response = await dio.post("/fileSharing/upload/", data: {
+    await dio.post("/fileSharing/upload/", data: {
       "token": userState.token,
-      "to": other_id,
+      "to": otherID,
       "filename": filename,
       "myfile": b64data,
       "ttl": timeToLive
     });
-    print(response.data);
   }
 }

@@ -1,17 +1,11 @@
-import 'dart:io';
-
-import 'package:flutter/material.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:sfs_frontend/helper/datetime.dart';
-import 'package:sfs_frontend/helper/file_handler.dart';
-import 'package:sfs_frontend/services/user_state.dart';
 import 'package:widget_circular_animator/widget_circular_animator.dart';
 
-import '../../services/key_controller.dart';
+import 'package:sfs_frontend/helper/file_handler.dart';
+import 'package:sfs_frontend/services/user_state.dart';
+import 'package:sfs_frontend/services/key_controller.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -21,8 +15,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  // final textController = TextEditingController();
-
   final usrController = TextEditingController();
   final tokenController = TextEditingController();
   final statusController = TextEditingController();
@@ -85,7 +77,6 @@ class _ProfilePageState extends State<ProfilePage> {
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              print('Cancel');
               Navigator.of(context).pop();
             },
             child: const Text('Cancel'),
@@ -135,15 +126,8 @@ class _ProfilePageState extends State<ProfilePage> {
                   enabled: false,
                   decoration: const InputDecoration(
                       labelText: "Username", border: OutlineInputBorder()),
-                  // onChanged: (_) => {
-                  //   if (!isUsernameChanged) {
-                  //     setState(() => {
-                  //       isUsernameChanged = true
-                  //     })
-                  //   }
-                  // },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   controller: tokenController,
                   readOnly: true,
@@ -151,7 +135,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: const InputDecoration(
                       labelText: "Token", border: OutlineInputBorder()),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   controller: statusController,
                   enabled: false,
@@ -159,13 +143,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: const InputDecoration(
                       labelText: "Key status", border: OutlineInputBorder()),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Row(
                   children: [
-                    // if (isUsernameChanged) TextButton(onPressed: () => {}, child: Text("Update profile")),
                     TextButton(
                         onPressed: () async => _showDialogRequestKey(false),
-                        child: Text("Change key")),
+                        child: const Text("Change key")),
                   ],
                 )
               ]),

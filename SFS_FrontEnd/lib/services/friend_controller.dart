@@ -1,79 +1,68 @@
-import 'dart:math';
-import 'package:sfs_frontend/models/friend.dart';
+import 'package:dio/dio.dart';
+import 'package:sfs_frontend/helper/dio_option.dart';
+import 'package:sfs_frontend/models/friend_clone.dart';
+import 'package:sfs_frontend/services/user_state.dart';
 
-// Note that we should use WebHook for receive incoming event
-// if you want to change to pooling, contact me instead
 class FriendController {
-  // Example list of friends
+  final UserState userState;
+  FriendController(this.userState);
 
-  final _friendPerPage = 3;
+  Future<List<Friend>> getListFriend() async {
+    var dio = Dio(baseOptions);
 
-  Future<int> getNumberOfFriend() async {
-    return Future.delayed(Duration(seconds: 1), () {
-      // Example code to fetch IC
-      return 4;
-    });
-    ;
+    var response = await dio
+        .post("/fileSharing/friend/", data: {'token': userState.token});
+    return processListFriendResponse(response);
   }
 
-  Future<List<Friend>> fetchPage(int pageKey) async {
-    List<Friend> friends = [];
-    try {
-      friends = await getFriends(startAt: pageKey, pageSize: _friendPerPage);
-      print("friends result: $friends");
-      print("pageKey: $pageKey");
-
-      List<Friend> temp = [...friends];
-      friends.sort((a, b) => b.lastMessageAt.compareTo(a.lastMessageAt));
-      friends.forEach((element) {
-        temp.removeWhere((elementQuery) => elementQuery.name == element.name);
-      });
-
-      temp.insertAll(0, friends);
-
-      return temp;
-    } catch (error) {
-      return friends;
-    }
+  List<Friend> processListFriendResponse(Response<dynamic> response) {
+    List<dynamic> t = response.data;
+    List<Map<String, dynamic>> data = t.cast<Map<String, dynamic>>();
+    List<Friend> result = data.map((e) {
+      return Friend(
+        id: e["friend_id"],
+        name: e["username"],
+        lastMessageAt:
+            e["uploaded_at"] == "" ? null : DateTime.parse(e["uploaded_at"]),
+      );
+    }).toList();
+    
+    return result;
   }
 
-  Future<List<Friend>> getFriends({startAt, pageSize}) async {
-    List<Friend> _friends = [
-      new Friend(id: '1', name: 'Alice', lastMessageAt: DateTime.now()),
-      new Friend(id: '2', name: 'Get', lastMessageAt: DateTime.now()),
-      new Friend(id: '3', name: 'Duck', lastMessageAt: DateTime.now()),
-      new Friend(id: '4', name: 'Help', lastMessageAt: DateTime.now()),
-    ];
-    // Example code to fetch friends from the server
-    return Future.delayed(Duration(seconds: 1), () {
-      int initValue = startAt * pageSize;
-      print(initValue);
-      return _friends.skip(initValue).take(pageSize).toList();
-    });
+  Future<String> getCode() async {
+    var dio = Dio(baseOptions);
+
+    var response =
+        await dio.post("/friend/get/", data: {'token': userState.token});
+
+    dynamic responseData = response.data;
+    return responseData["friend_code"];
   }
 
   Future<String> generateCode() async {
-    // Example code to fetch friends from code gểnate
-    return await Future.delayed(Duration(seconds: 1), () {
-      return 'CuAJSTnT${DateTime.now().millisecondsSinceEpoch}';
-    });
+    var dio = Dio(baseOptions);
+
+    var response =
+        await dio.post("/friend/generate/", data: {'token': userState.token});
+
+    dynamic responseData = response.data;
+    return responseData["friend_code"];
   }
 
   Future<String> addInviteCode(String ic) async {
-    return Future.delayed(Duration(seconds: 1), () {
-      // Example code to add Invite Code
-      return "Success";
-    });
+    var dio = Dio(baseOptions);
+
+    var response = await dio.post("/friend/add/",
+        data: {'token': userState.token, 'friend_code': ic});
+    dynamic responseData = response.data;
+    return responseData["messages"];
   }
 
-  Future<String> addIC(String ic) async {
+  Future<String> addInviteCodeHandler(String ic) async {
     try {
       String flag = await addInviteCode(ic);
-      if (flag == "Success") {
-        return "Add IC success";
-      } else {
-        return "Add IC failed";
-      }
+      return flag;
     } catch (error) {
       return error.toString();
     }

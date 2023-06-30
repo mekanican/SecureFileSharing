@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter_login/flutter_login.dart';
 import 'package:sfs_frontend/helper/dio_option.dart';
@@ -17,9 +16,13 @@ class UserController {
       'password': sData.password ?? '',
       'email': sData.additionalSignupData?["email"] ?? '',
     });
+    return processSignupResponse(response);
+  }
+
+  String? processSignupResponse(Response<dynamic> response) {
     Map<String, dynamic> data = response.data;
     String? error;
-
+    
     if (data.containsKey("password")) {
       error = "";
       List<dynamic> p = data["password"];
@@ -35,7 +38,6 @@ class UserController {
     } else {
       error = "Register successfully, please verify email and log in";
     }
-
     return error;
   }
 
@@ -46,9 +48,13 @@ class UserController {
       'username': sData.name,
       'password': sData.password,
     });
+    return processSigninResponse(response, sData);
+  }
+
+  String? processSigninResponse(Response<dynamic> response, LoginData sData) {
     Map<String, dynamic> data = response.data;
     String? error;
-
+    
     if (data.containsKey("error")) {
       error = data["error"];
     } else {
@@ -57,10 +63,5 @@ class UserController {
       userState.login(sData.name, token, userId);
     }
     return error;
-  }
-
-  Future<String?> dummySignIn(_) async {
-    userState.login("abc", "xyz", 123);
-    return null;
   }
 }

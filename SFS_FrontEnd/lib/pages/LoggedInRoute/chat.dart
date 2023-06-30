@@ -3,33 +3,30 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
-import 'package:mime/mime.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
+
 import 'package:sfs_frontend/helper/file_handler.dart';
 import 'package:sfs_frontend/helper/md5.dart';
 import 'package:sfs_frontend/helper/rsa.dart';
+import 'package:sfs_frontend/helper/chain.dart';
 import 'package:sfs_frontend/helper/socketio_handler.dart';
+
 import 'package:sfs_frontend/services/chat_controller.dart';
 import 'package:sfs_frontend/services/detect_controller.dart';
 import 'package:sfs_frontend/services/key_controller.dart';
-import 'package:uuid/uuid.dart';
+import 'package:sfs_frontend/services/upload_controller.dart';
+import 'package:sfs_frontend/services/user_state.dart';
 
-import '../../helper/chain.dart';
-import '../../models/chat.dart';
-import '../../models/data.dart';
-import '../../services/upload_controller.dart';
-import '../../services/user_state.dart';
+import 'package:sfs_frontend/models/chat.dart';
+import 'package:sfs_frontend/models/data.dart';
 
 class ChatPage extends StatefulWidget {
-  const ChatPage({super.key, required this.other_id});
-  final int other_id;
+  const ChatPage({super.key, required this.otherID});
+  final int otherID;
 
   @override
   State<StatefulWidget> createState() {
@@ -57,15 +54,15 @@ class _ChatPageState extends State<ChatPage> {
     keyController = KeyController(userState);
     uploadController = UploadController(userState);
     Socket sk = Socket();
-    int user_id = userState.userId;
-    sk.sk.on("Reload $user_id", (data) async => await refresh());
-    user = types.User(id: user_id.toString());
+    int userID = userState.userId;
+    sk.sk.on("Reload $userID", (data) async => await refresh());
+    user = types.User(id: userID.toString());
     refresh();
   }
 
   Future<void> refresh() async {
-    if (this.mounted) {
-      List<ChatMessage> l = await chatController.getChat(widget.other_id);
+    if (mounted) {
+      List<ChatMessage> l = await chatController.getChat(widget.otherID);
       setState(() {
         _messages = l.map((e) => e.toFileMessage()).toList();
       });
@@ -96,7 +93,6 @@ class _ChatPageState extends State<ChatPage> {
     if (message is types.FileMessage) {
       var uri = message.uri;
       var filename = message.name;
-      // if (message.)
       if (uri.startsWith("http")) {
         try {
           // Load spinner
@@ -139,8 +135,8 @@ class _ChatPageState extends State<ChatPage> {
       var file = File(result.files.single.path!);
       var data = await file.readAsBytes();
 
-      var hash_data = MD5.getHash(data);
-      bool r = await detectController.detect(hash_data);
+      var hashData = MD5.getHash(data);
+      bool r = await detectController.detect(hashData);
       if (r) {
         //Malware -> skip
         if (context.mounted) {
@@ -150,10 +146,10 @@ class _ChatPageState extends State<ChatPage> {
         return;
       }
 
-      RSAPublicKey pubkey = await keyController.getOtherPubKey(widget.other_id);
+      RSAPublicKey pubkey = await keyController.getOtherPubKey(widget.otherID);
       Data d = Chain.encrypt(pubkey, data);
       await uploadController.upload(
-          widget.other_id, result.files.single.name, d.toBase64());
+          widget.otherID, result.files.single.name, d.toBase64());
     }
   }
 }

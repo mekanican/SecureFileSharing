@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:encrypt/encrypt.dart';
 import 'package:sfs_frontend/helper/aes.dart';
 import 'package:sfs_frontend/helper/rsa.dart';
@@ -12,10 +10,10 @@ class Chain {
     s[0] = 0;
     Key k = Key(s);
 
-    Bytes encrypted_data = AESWrapper.encrypt(data, k.bytes);
-    Bytes encrypted_key = pk.encryptData(k.bytes);
+    Bytes encryptedData = AESWrapper.encrypt(data, k.bytes);
+    Bytes encryptedKey = pk.encryptData(k.bytes);
 
-    return Data(encryptedData: encrypted_data, encryptedKey: encrypted_key);
+    return Data(encryptedData: encryptedData, encryptedKey: encryptedKey);
   }
 
   static Bytes decrypt(RSAPrivateKey pk, Data data) {
@@ -23,7 +21,7 @@ class Chain {
     while (k.length < 32) {
       k.insert(0, 0);
     }
-    Bytes orig_data = AESWrapper.decrypt(data.encryptedData, Bytes.fromList(k));
-    return orig_data;
+    Bytes origData = AESWrapper.decrypt(data.encryptedData, Bytes.fromList(k));
+    return origData;
   }
 }
