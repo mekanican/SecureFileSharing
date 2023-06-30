@@ -4,14 +4,14 @@ import 'dart:math';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
 class ChatMessage {
-  final int from_id;
-  final int to_id;
+  final int fromID;
+  final int toID;
   final String url;
   final DateTime createdAt;
 
   ChatMessage({
-    required this.from_id,
-    required this.to_id,
+    required this.fromID,
+    required this.toID,
     required this.url,
     required this.createdAt,
   });
@@ -31,7 +31,7 @@ class ChatMessage {
 
   types.FileMessage toFileMessage() {
     return types.FileMessage(
-        author: types.User(id: from_id.toString()),
+        author: types.User(id: fromID.toString()),
         id: randomString(),
         name: _url2filename(),
         size: 1234,

@@ -1,11 +1,14 @@
 import 'package:flutter/scheduler.dart';
-import 'package:sfs_frontend/services/friend_clone_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sfs_frontend/services/user_state.dart';
 import 'package:provider/provider.dart';
 
+import 'package:sfs_frontend/services/friend_controller.dart';
+import 'package:sfs_frontend/services/user_state.dart';
+
 class FriendCodePage extends StatefulWidget {
+  const FriendCodePage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _FriendCodePage();
@@ -13,7 +16,6 @@ class FriendCodePage extends StatefulWidget {
 }
 
 class _FriendCodePage extends State<FriendCodePage> {
-  final _searchController = TextEditingController();
   late UserState userState;
   late FriendController friendController;
   late String _userInviteCode = "";
@@ -54,52 +56,50 @@ class _FriendCodePage extends State<FriendCodePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-                child: Text("Give your friend this invite code"),
-                padding: const EdgeInsets.symmetric(vertical: 8)),
+            const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Text("Give your friend this invite code")),
             CopyToClipboardText(text: _userInviteCode),
-            SizedBox(height: 16.0),
-            Padding(
-                child: Text("Or"),
-                padding: const EdgeInsets.symmetric(vertical: 8)),
+            const SizedBox(height: 16.0),
+            const Padding(
+                padding: EdgeInsets.symmetric(vertical: 8),
+                child: Text("Or")),
             TextField(
               controller: _inviteCodeController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter invite code',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 final inviteCode = _inviteCodeController.text;
-                // TODO: Store the invite code or send it to a server
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text('Invite code submitted: $inviteCode'),
                   ),
                 );
-
                 friendController
-                    .addIC(inviteCode)
+                    .addInviteCodeHandler(inviteCode)
                     .then((res) => ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                            content: Text('$res'),
+                            content: Text(res),
                           ),
                         ));
               },
-              child: Text('Add Friend'),
+              child: const Text('Add Friend'),
             ),
             ElevatedButton(
               onPressed: () {
                 generateCode();
               },
-              child: Text('Generate code'),
               style: ButtonStyle(
                   backgroundColor:
                       MaterialStateProperty.all<Color>(Colors.white),
                   foregroundColor:
                       MaterialStateProperty.all<Color>(Colors.blue)),
+              child: const Text('Generate code'),
             ),
           ],
         ),

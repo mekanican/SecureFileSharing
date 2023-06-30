@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sfs_frontend/pages/GuestRoute/guest_route.dart';
-import 'package:sfs_frontend/pages/LoggedInRoute/friend_clone.dart';
-import 'package:sfs_frontend/pages/LoggedInRoute/profile.dart';
-import 'package:sfs_frontend/services/user_state.dart';
 
-import '../home.dart';
+import 'package:sfs_frontend/pages/GuestRoute/guest_route.dart';
+import 'package:sfs_frontend/pages/LoggedInRoute/friend.dart';
+import 'package:sfs_frontend/pages/LoggedInRoute/profile.dart';
+import 'package:sfs_frontend/pages/home.dart';
+import 'package:sfs_frontend/services/user_state.dart';
 
 class LoggedInRoute extends StatefulWidget {
   const LoggedInRoute({super.key, required this.title});
@@ -23,19 +23,15 @@ class _LoggedInRouteState extends State<LoggedInRoute> {
   Widget build(BuildContext context) {
     Widget page;
     var userState = context.watch<UserState>();
-    print(userState.getUsername());
     switch (selectedIndex) {
       case 0:
-        page = HomePage();
+        page = const HomePage();
         break;
       case 1:
-        page = FriendListPage();
+        page = const FriendListPage();
         break;
-      // case 2:
-      //   page = ChatPage();
-      //   break;
       case 2:
-        page = ProfilePage();
+        page = const ProfilePage();
         break;
       default:
         throw UnimplementedError("Not found");

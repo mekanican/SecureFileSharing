@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:sfs_frontend/models/friend.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:sfs_frontend/helper/socketio_handler.dart';
+import 'package:sfs_frontend/models/friend_clone.dart';
 import 'package:sfs_frontend/pages/LoggedInRoute/chat.dart';
 import 'package:sfs_frontend/services/friend_controller.dart';
-import 'package:flutter/services.dart';
 import 'package:animations/animations.dart';
 import 'dart:async';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:sfs_frontend/pages/LoggedInRoute/code_page.dart';
+import 'package:sfs_frontend/services/user_state.dart';
 
 class FriendListPage extends StatefulWidget {
+  const FriendListPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return _FriendListPageState();
@@ -18,112 +20,80 @@ class FriendListPage extends StatefulWidget {
 }
 
 class _FriendListPageState extends State<FriendListPage> {
-  final _searchController = TextEditingController();
-  String ic = ""; // input invite code
+  late UserState userState;
+  late FriendController friendController;
   List<Friend> _listFriend = []; //local state for search
-  final friendController = FriendController();
-  final _pagingController = PagingController<int, Friend>(firstPageKey: 0);
-  Timer? _timer;
-  final _friendPerPage = 3;
 
   @override
   void initState() {
     super.initState();
-
-    // Set up the timer to call _pagingController.refresh() every second
-    _timer = Timer.periodic(Duration(seconds: 20), (_) {
-      _pagingController.refresh();
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      userState = Provider.of<UserState>(context, listen: false);
+      friendController = FriendController(userState);
+      var sk = Socket();
+      var currentID = userState.userId;
+      sk.sk.on("Reload $currentID", (data) async => await refresh());
+      await refresh();
     });
-
-    // Set up the page request listener
-    _pagingController.addPageRequestListener((pageKey) async {
-      try {
-        final query = _searchController.text;
-        final friends = await friendController.fetchPage(pageKey);
-        final isLastPage = friends.length < _friendPerPage;
-        List<Friend> afterFilter = _filterFriends(friends);
-        if (isLastPage) {
-          _pagingController.appendLastPage(afterFilter);
-        } else {
-          final nextPageKey = pageKey + 1;
-          print("pageKey:  $nextPageKey");
-          _pagingController.appendPage(afterFilter, nextPageKey);
-        }
-      } catch (error) {
-        _pagingController.error = error;
-      }
-    });
-  }
-
-  List<Friend> _filterFriends(List<Friend> friends) {
-    try {
-      final query = _searchController.text;
-      if (query.isEmpty) {
-        return friends;
-      } else {
-        return friends
-            .where((friend) =>
-                friend.name.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
-    } catch (err) {
-      return friends;
-    }
   }
 
   @override
   void dispose() {
     super.dispose();
-    _timer?.cancel();
+  }
+
+  Future<void> refresh() async {
+    if (mounted) {
+      var l = await friendController.getListFriend();
+      setState(() {
+        _listFriend = l;
+      });
+    }
+  }
+
+  void _onCloseContainer(Object? arg) {
+    refresh();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: TextField(
-            controller: _searchController,
-            onChanged: (_) => _pagingController.refresh(),
-            decoration: InputDecoration(
-              hintText: 'Search friends',
-              border: InputBorder.none,
-            ),
-          ),
+          title: const Text("Friends List")
         ),
         body: RefreshIndicator(
-            onRefresh: () async => _pagingController.refresh(),
-            child: PagedListView<int, Friend>(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<Friend>(
-                itemBuilder: (_, friend, index) {
-                  print("Build in $friend");
-                  final avatar = friend.name.isNotEmpty
-                      ? friend.name[0].toUpperCase()
-                      : '';
-                  return Card(
-                    color: Colors.white,
-                    elevation: 2.0,
-                    child: OpenContainer(
-                      transitionType: ContainerTransitionType.fadeThrough,
-                      closedColor: Theme.of(context).cardColor,
-                      closedElevation: 0.0,
-                      openElevation: 4.0,
-                      transitionDuration: Duration(milliseconds: 1500),
-                      openBuilder: (BuildContext context, VoidCallback _) =>
-                          ChatPage(other_id: 0),
-                      closedBuilder:
-                          (BuildContext _, VoidCallback openContainer) {
-                        return ListTile(
-                          leading: CircleAvatar(child: Text(avatar)),
-                          title: Text(friend.name),
-                          subtitle: Text(
-                              'Last message at ${DateTime.now().isDateEqual(friend.lastMessageAt) ? DateFormat.jm().format(friend.lastMessageAt) : DateFormat.yMd().add_jm().format(friend.lastMessageAt)}'),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
+            onRefresh: () async => await refresh(),
+            child: ListView.builder(
+              itemCount: _listFriend.length,
+              itemBuilder: (context, index) {
+                final friend = _listFriend[index];
+                final avatar =
+                    friend.name.isNotEmpty ? friend.name[0].toUpperCase() : '';
+                return Card(
+                  color: Colors.white,
+                  elevation: 2.0,
+                  child: OpenContainer(
+                    transitionType: ContainerTransitionType.fadeThrough,
+                    closedColor: Theme.of(context).cardColor,
+                    closedElevation: 0.0,
+                    openElevation: 4.0,
+                    transitionDuration: const Duration(milliseconds: 1500),
+                    openBuilder: (BuildContext context, VoidCallback _) =>
+                        ChatPage(otherID: friend.id),
+                    closedBuilder:
+                        (BuildContext _, VoidCallback openContainer) {
+                      return ListTile(
+                        leading: CircleAvatar(child: Text(avatar)),
+                        title: Text(friend.name),
+                        subtitle: friend.lastMessageAt.toString() != "null"
+                            ? Text(
+                                'Last message at ${friend.lastMessageAt.toString()}')
+                            : Text(''),
+                      );
+                    },
+                  ),
+                );
+              },
             )),
         floatingActionButton: OpenContainer(
           transitionType: ContainerTransitionType.fadeThrough,
@@ -149,12 +119,7 @@ class _FriendListPageState extends State<FriendListPage> {
               ),
             );
           },
+          onClosed: _onCloseContainer,
         ));
-  }
-}
-
-extension CompareDates on DateTime {
-  bool isDateEqual(DateTime date2) {
-    return year == date2.year && month == date2.month && day == date2.day;
   }
 }
