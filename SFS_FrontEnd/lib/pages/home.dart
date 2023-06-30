@@ -11,9 +11,7 @@ class HomePage extends StatelessWidget {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Image(image: AssetImage("logo/logo_full.png"))
-        ],
+        children: [Image(image: AssetImage("logo/logo_full.png"))],
       ),
     );
   }

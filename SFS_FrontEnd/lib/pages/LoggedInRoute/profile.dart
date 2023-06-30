@@ -31,7 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   var isUsernameChanged = false;
 
-
   @override
   void dispose() {
     usrController.dispose();
@@ -54,7 +53,6 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
-
   Future<void> setInitialProfileData() async {
     usrController.text = userState.username;
     tokenController.text = userState.token;
@@ -70,36 +68,38 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<String?> _showDialogRequestKey(bool isFirstTime) async {
     Text content;
     if (isFirstTime) {
-      content = const Text("Welcome to your first login to our system!\nDo you want to create the new key (must have to start sending file)?\nThe request may take a few second");
+      content = const Text(
+          "Welcome to your first login to our system!\nDo you want to create the new key (must have to start sending file)?\nThe request may take a few second");
     } else {
-      content = const Text("It seems like you want to change the key!\nFiles you received in the past will not be accessible forever.\nContinue?");
+      content = const Text(
+          "It seems like you want to change the key!\nFiles you received in the past will not be accessible forever.\nContinue?");
       statusController.text = "Assigned";
     }
 
     return showDialog<String>(
-        context: context,
-        barrierDismissible: false, // Cannot tap outside
-        builder: (BuildContext context) => AlertDialog(
-          title: const Text('Key request'),
-          content: content,
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                print('Cancel');
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () async {
-                handleKey();
-                statusController.text = "Assigned";
-                Navigator.of(context).pop();
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        ),
+      context: context,
+      barrierDismissible: false, // Cannot tap outside
+      builder: (BuildContext context) => AlertDialog(
+        title: const Text('Key request'),
+        content: content,
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              print('Cancel');
+              Navigator.of(context).pop();
+            },
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              handleKey();
+              statusController.text = "Assigned";
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      ),
     );
   }
 
@@ -121,59 +121,56 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
           ),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return Container(
-                width: constraints.maxWidth * 0.5,
-                margin: const EdgeInsets.all(20.0),
-                padding: const EdgeInsets.all(10.0),
-                decoration: BoxDecoration(border: Border.all(color: Colors.blueAccent)),
-                child: Column(children: [
-                  TextField(
-                    controller: usrController,
-                    readOnly: true,
-                    enabled: false,
-                    decoration: const InputDecoration(
-                      labelText: "Username",
-                      border: OutlineInputBorder()
-                    ),
-                    // onChanged: (_) => {
-                    //   if (!isUsernameChanged) {
-                    //     setState(() => {
-                    //       isUsernameChanged = true
-                    //     })
-                    //   }
-                    // },
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: tokenController,
-                    readOnly: true,
-                    enabled: false,
-                    decoration: const InputDecoration(
-                      labelText: "Token",
-                      border: OutlineInputBorder()
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  TextField(
-                    controller: statusController,
-                    enabled: false,
-                    readOnly: true,
-                    decoration: const InputDecoration(
-                      labelText: "Key status",
-                      border: OutlineInputBorder()
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  Row(children: [
+          LayoutBuilder(builder: (context, constraints) {
+            return Container(
+              width: constraints.maxWidth * 0.5,
+              margin: const EdgeInsets.all(20.0),
+              padding: const EdgeInsets.all(10.0),
+              decoration:
+                  BoxDecoration(border: Border.all(color: Colors.blueAccent)),
+              child: Column(children: [
+                TextField(
+                  controller: usrController,
+                  readOnly: true,
+                  enabled: false,
+                  decoration: const InputDecoration(
+                      labelText: "Username", border: OutlineInputBorder()),
+                  // onChanged: (_) => {
+                  //   if (!isUsernameChanged) {
+                  //     setState(() => {
+                  //       isUsernameChanged = true
+                  //     })
+                  //   }
+                  // },
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: tokenController,
+                  readOnly: true,
+                  enabled: false,
+                  decoration: const InputDecoration(
+                      labelText: "Token", border: OutlineInputBorder()),
+                ),
+                SizedBox(height: 10),
+                TextField(
+                  controller: statusController,
+                  enabled: false,
+                  readOnly: true,
+                  decoration: const InputDecoration(
+                      labelText: "Key status", border: OutlineInputBorder()),
+                ),
+                SizedBox(height: 10),
+                Row(
+                  children: [
                     // if (isUsernameChanged) TextButton(onPressed: () => {}, child: Text("Update profile")),
-                    TextButton(onPressed: () async => _showDialogRequestKey(false), child: Text("Change key")),
-                  ],)
-                ]),
-              );
-            }
-          )
+                    TextButton(
+                        onPressed: () async => _showDialogRequestKey(false),
+                        child: Text("Change key")),
+                  ],
+                )
+              ]),
+            );
+          })
         ],
       ),
     );

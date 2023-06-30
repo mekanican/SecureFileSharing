@@ -1,5 +1,5 @@
 extension MyDateExtension on DateTime {
-  String getDateOnlyAsString(){
+  String getDateOnlyAsString() {
     return "$day/$month/$year";
   }
 }

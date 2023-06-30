@@ -13,26 +13,24 @@ class LoginPage extends StatelessWidget {
     var userState = context.watch<UserState>();
     var userController = UserController(userState);
     return FlutterLogin(
-      onLogin: userController.signIn, 
-      onRecoverPassword: (_){},
+      onLogin: userController.signIn,
+      onRecoverPassword: (_) {},
       onSignup: userController.signUp,
       logo: AssetImage("logo/logo_icon.png"),
       userType: LoginUserType.name,
       additionalSignupFields: const [
         UserFormField(
-          keyName: "email",
-          displayName: "Email",
-          icon: Icon(Icons.email),
-          userType: LoginUserType.email,
-          fieldValidator: FlutterLogin.defaultEmailValidator
-        )
+            keyName: "email",
+            displayName: "Email",
+            icon: Icon(Icons.email),
+            userType: LoginUserType.email,
+            fieldValidator: FlutterLogin.defaultEmailValidator)
       ],
       userValidator: (_) => null,
-      onSubmitAnimationCompleted:() {
+      onSubmitAnimationCompleted: () {
         print("Logged ${userState.getUsername()} in successfully");
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const LoggedInRoute(title: "Logged In"))
-        );
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (context) => const LoggedInRoute(title: "Logged In")));
       },
     );
   }

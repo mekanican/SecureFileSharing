@@ -17,5 +17,4 @@ class AESWrapper {
     final data = decrypter.decryptBytes(Encrypted(enc), iv: iv);
     return Bytes.fromList(data);
   }
-
 }

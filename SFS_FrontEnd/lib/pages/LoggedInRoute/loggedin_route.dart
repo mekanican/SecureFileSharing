@@ -53,7 +53,8 @@ class _LoggedInRouteState extends State<LoggedInRoute> {
     });
   }
 
-  SafeArea getHorizontalNavigationBar(BuildContext context, UserState userState, BoxConstraints constraints) {
+  SafeArea getHorizontalNavigationBar(
+      BuildContext context, UserState userState, BoxConstraints constraints) {
     return SafeArea(
         child: NavigationRail(
       destinations: const [
@@ -61,17 +62,19 @@ class _LoggedInRouteState extends State<LoggedInRoute> {
         NavigationRailDestination(
             icon: Icon(Icons.supervised_user_circle),
             label: Text("List of friends")),
-        NavigationRailDestination(icon: Icon(Icons.perm_device_information_outlined), label: Text("Profile")),
-        NavigationRailDestination(icon: Icon(Icons.logout), label: Text("Log out")),
+        NavigationRailDestination(
+            icon: Icon(Icons.perm_device_information_outlined),
+            label: Text("Profile")),
+        NavigationRailDestination(
+            icon: Icon(Icons.logout), label: Text("Log out")),
       ],
       selectedIndex: selectedIndex,
       onDestinationSelected: (value) {
         // TODO: hardcoded value, need change in future
         if (value == 3) {
           userState.logout();
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => const GuestRoute(title: "Guest"))
-          );
+          Navigator.of(context).pushReplacement(MaterialPageRoute(
+              builder: (context) => const GuestRoute(title: "Guest")));
         } else {
           setState(() {
             selectedIndex = value;
