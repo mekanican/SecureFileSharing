@@ -7,8 +7,11 @@ from io import BytesIO
 
 import requests
 from apps.file_sharing.minio_handler import MinioHandler
+from apps.friend_request.models import FriendList
 from django.contrib.auth import get_user_model
 from django.db import connection
+from django.db.models import Q
+from django.http import HttpResponse
 from django.shortcuts import render
 from dotenv import load_dotenv
 from rest_framework import status
@@ -19,8 +22,6 @@ from rest_framework.views import APIView
 
 from .models.filesharing import FileSharing
 from .serializers import FileSharingSerializer
-from apps.friend_request.models import FriendList
-from django.db.models import Q
 
 User = get_user_model()
 
@@ -28,8 +29,6 @@ MINIO_HANDLER = MinioHandler.get_instance()
 
 load_dotenv()  # Load environment variables from .env file
 
-# CHAT_SERVICE_HOST = os.getenv("CHAT_SERVICE_HOST")
-# CHAT_SERVICE_PORT = os.getenv("CHAT_SERVICE_PORT")
 CHAT_SERVICE_URL = os.getenv("CHAT_SERVICE_URL")
 
 
@@ -37,14 +36,14 @@ def notifier(user1: int, user2: int) -> None:
     """Notify both user 1 and 2 to reload their chat."""
     try:
         requests.get(CHAT_SERVICE_URL + "/" + str(user1), timeout=8)
-    except Exception as e:
+    except Exception as exc:
         print(CHAT_SERVICE_URL + "/" + str(user1))
-        print(e)
+        print(exc)
     try:
         requests.get(CHAT_SERVICE_URL + "/" + str(user2), timeout=8)
-    except Exception as e:
+    except Exception as exc:
         print(CHAT_SERVICE_URL + "/" + str(user2))
-        print(e)
+        print(exc)
 
 
 def is_base64(string_bytes) -> bool:
@@ -52,7 +51,7 @@ def is_base64(string_bytes) -> bool:
     try:
         if isinstance(string_bytes, str):
             # If there's any unicode here, an exception will be thrown
-            # and the function will return false
+            # and the function will return False
             sb_bytes = bytes(string_bytes, "ascii")
         elif isinstance(string_bytes, bytes):
             sb_bytes = string_bytes
@@ -68,7 +67,7 @@ class UploadFileHandler(APIView):
 
     serializer_class = FileSharingSerializer
 
-    def get(self, request):
+    def get(self, request) -> HttpResponse:
         clone_request = request
 
         files = FileSharing.objects.all()
@@ -84,7 +83,7 @@ class UploadFileHandler(APIView):
             },
         )
 
-    def post(self, request):
+    def post(self, request) -> Response:
         clone_request = JSONParser().parse(request)
 
         # Put file to Minio
@@ -174,7 +173,7 @@ class UploadFileHandler(APIView):
 class ChatHandler(APIView):
     """Handler for chat."""
 
-    def post(self, request):
+    def post(self, request) -> Response:
         clone_request = JSONParser().parse(request)
 
         token = clone_request.get("token")
@@ -226,7 +225,7 @@ class ChatHandler(APIView):
 class FriendHandler(APIView):
     """Handler for friend."""
 
-    def post(self, request):
+    def post(self, request) -> Response:
         clone_request = JSONParser().parse(request)
         token = clone_request.get("token")
         user = Token.objects.get(key=token).user
@@ -278,19 +277,25 @@ class FriendHandler(APIView):
                 })
 
         # add friend that haven't chat
-        if FriendList.objects.filter(Q(user_idA=user.id) | Q(user_idB=user.id)).exists():
-            friend_list= FriendList.objects.filter(Q(user_idA=user.id) | Q(user_idB=user.id))
-            for rows in friend_list.values():        
-                userA= User.objects.get(id=rows['user_idA'])
-                userB= User.objects.get(id=rows['user_idB'])
-                temp_user= userA if(userA.id!=user.id) else userB
-                if not any(item["friend_id"] == temp_user.id for item in result):
-                   result.append({
-                    "friend_id": temp_user.id,
-                    "uploaded_at": "",
-                    "username": temp_user.get_username(),
+        if FriendList.objects.filter(
+            Q(user_idA=user.id) | Q(user_idB=user.id),
+        ).exists():
+            friend_list = FriendList.objects.filter(
+                Q(user_idA=user.id) | Q(user_idB=user.id),
+            )
+            for rows in friend_list.values():
+                user_a = User.objects.get(id=rows["user_idA"])
+                user_b = User.objects.get(id=rows["user_idB"])
+                temp_user = user_a if (user_a.id != user.id) else user_b
+                if not any(
+                    item["friend_id"] == temp_user.id for item in result
+                ):
+                    result.append({
+                        "friend_id": temp_user.id,
+                        "uploaded_at": "",
+                        "username": temp_user.get_username(),
                     })
-                        
+
         return Response(
             result,
             status=status.HTTP_200_OK,

@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta
+from typing import Literal
 
 import jwt
 from django.core.mail import send_mail
@@ -21,7 +22,7 @@ class SendEmailHandler:
     """Handler for sending email."""
 
     @staticmethod
-    def send_mail(request, detail):
+    def send_mail(request, detail) -> Literal[True]:
         """Send email to user."""
         receiver_parsing = request
 

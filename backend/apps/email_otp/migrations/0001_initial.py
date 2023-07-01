@@ -4,6 +4,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+    """Bypass check."""
 
     initial = True
 
@@ -12,11 +13,18 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='EmailOTP',
+            name="EmailOTP",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False, unique=True)),
-                ('email', models.CharField(max_length=254)),
-                ('date_verify', models.DateTimeField(blank=True, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        primary_key=True,
+                        serialize=False,
+                        unique=True,
+                    ),
+                ),
+                ("email", models.CharField(max_length=254)),
+                ("date_verify", models.DateTimeField(blank=True, null=True)),
             ],
         ),
     ]

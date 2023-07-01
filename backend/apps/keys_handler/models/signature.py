@@ -10,10 +10,10 @@ class Signature(models.Model):
         max_length=MAX_SIGNATURE_LENGTH,
     )
 
-    def generate_signature(self, data):
+    def generate_signature(self, data) -> None:
         """Generate signature for data."""
         self.secret = data
 
-    def check_signature(self, data):
+    def check_signature(self, data) -> bool:
         """Check signature for data."""
         return self.secret == data

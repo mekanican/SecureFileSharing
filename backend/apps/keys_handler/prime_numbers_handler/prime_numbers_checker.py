@@ -2,7 +2,7 @@
 import random
 
 
-def is_prime(n, k=10):
+def is_prime(n, k=10) -> bool:
     """Miller-Rabin primality test."""
     # Handle the base cases
     if n in (2, 3):
