@@ -8,17 +8,24 @@ class RSAPublicKeySerializer(serializers.ModelSerializer):
     """Serializer for RSAPrivateKey model."""
 
     class Meta:
-        """Meta class."""
 
         model = RSAPublicKey
-        fields = ("n", "e", "user")
+        fields = (
+            "n",
+            "e",
+            "user",
+        )
 
 
 class RSAPrivateKeySerializer(serializers.ModelSerializer):
     """Serializer for RSAPublicKey model."""
 
     class Meta:
-        """Meta class."""
 
         model = RSAPrivateKey
-        fields = ("p", "q", "d", "user")
+        fields = (
+            "p",
+            "q",
+            "d",
+            "user",
+        )

@@ -6,26 +6,35 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+    """Bypass check."""
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('file_sharing', '0002_initial'),
+        ("file_sharing", "0002_initial"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='filesharing',
-            name='from_user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='from_user', to=settings.AUTH_USER_MODEL),
+            model_name="filesharing",
+            name="from_user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="from_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='filesharing',
-            name='to_user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='to_user', to=settings.AUTH_USER_MODEL),
+            model_name="filesharing",
+            name="to_user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="to_user",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AlterField(
-            model_name='filesharing',
-            name='url',
+            model_name="filesharing",
+            name="url",
             field=models.CharField(blank=True, max_length=1000, null=True),
         ),
     ]

@@ -22,15 +22,15 @@ class RSAPublicKey(models.Model):
         null=True,
     )
 
-    def set_n(self, n):
+    def set_n(self, n) -> None:
         """Set n."""
         self.n = n
 
-    def set_e(self, e):
+    def set_e(self, e) -> None:
         """Set e."""
         self.e = e
 
-    def get_content(self):
+    def get_content(self) -> dict:
         """Return a json representation of the object."""
         return json.dumps({
             "n": self.n,
@@ -51,7 +51,7 @@ class RSAPrivateKey(models.Model):
         null=True,
     )
 
-    def generate_keys(self):
+    def generate_keys(self) -> tuple[int, int]:
         """Generate RSA keys.
 
         p, q are large prime numbers.

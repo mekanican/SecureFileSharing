@@ -1,5 +1,5 @@
 # pylint: disable=import-error,invalid-name,no-name-in-module
-# import random # random is weak, do not use for secure system!
+
 import secrets
 
 from apps.keys_handler.prime_numbers_handler.prime_numbers_checker import (
@@ -10,7 +10,7 @@ from gmpy2 import mpz  # speedup calculating
 LENGTH_OF_PRIME_IN_BITS = 128
 
 
-def generate_large_prime_number():
+def generate_large_prime_number() -> int:
     """Generate a large prime number."""
     # Length of prime number in bits
     n = LENGTH_OF_PRIME_IN_BITS  # pylint: disable=invalid-name

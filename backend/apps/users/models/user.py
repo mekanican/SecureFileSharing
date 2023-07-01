@@ -1,4 +1,6 @@
 # pylint: disable=too-few-public-methods
+from typing import Any
+
 from django.contrib.auth import password_validation
 from django.contrib.auth.models import (
     AbstractBaseUser,
@@ -32,7 +34,13 @@ class CustomUserManager(UserManager):
 
     # pylint: disable=arguments-differ
     # pylint: disable=signature-differs
-    def create_superuser(self, username, email, password=None, **extra_fields):
+    def create_superuser(
+        self,
+        username,
+        email,
+        password=None,
+        **extra_fields,
+    ) -> Any:
         """Create superuser instance (used by `createsuperuser` cmd)."""
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
@@ -113,6 +121,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name = _("User")
         verbose_name_plural = _("Users")
 
-    def __str__(self):
+    def __str__(self) -> str:
         # pylint: disable=invalid-str-returned
         return self.username

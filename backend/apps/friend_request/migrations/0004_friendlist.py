@@ -4,19 +4,24 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+    """Bypass check."""
 
     dependencies = [
-        ('friend_request', '0003_remove_friendrequest_from_id'),
+        ("friend_request", "0003_remove_friendrequest_from_id"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='FriendList',
+            name="FriendList",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False, unique=True)),
-                ('user_id', models.CharField(max_length=254)),
-                ('friend_id', models.CharField(max_length=254)),
-                ('status', models.CharField(max_length=20)),
+                ("id", models.BigAutoField(
+                    primary_key=True,
+                    serialize=False,
+                    unique=True,
+                )),
+                ("user_id", models.CharField(max_length=254)),
+                ("friend_id", models.CharField(max_length=254)),
+                ("status", models.CharField(max_length=20)),
             ],
         ),
     ]

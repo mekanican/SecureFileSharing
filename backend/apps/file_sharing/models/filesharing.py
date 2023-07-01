@@ -1,4 +1,3 @@
-# from apps.users.models import User
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -25,4 +24,7 @@ class FileSharing(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self) -> str:
-        return f"{self.from_user} to {self.to_user} with URL {self.url}"
+        return (
+            f"{self.from_user} to {self.to_user} with URL {self.url} "
+            f"at {self.uploaded_at}"
+        )
