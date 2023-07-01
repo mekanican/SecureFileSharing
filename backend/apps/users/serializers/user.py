@@ -1,5 +1,8 @@
 # pylint: disable=too-few-public-methods
+from typing import Any
+
 from django.contrib.auth import get_user_model, password_validation
+from django.contrib.auth.models import AbstractBaseUser
 from rest_framework import serializers
 
 User = get_user_model()
@@ -18,7 +21,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ("id", "username", "email", "password")
         read_only_fields = ("id",)
 
-    def validate_password(self, value):
+    def validate_password(self, value) -> Any:
         """Validate password.
 
         Validate the password against the password validation policy.
@@ -27,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
         password_validation.validate_password(value)
         return value
 
-    def validate_email(self, value):
+    def validate_email(self, value) -> Any:
         """Validate email.
 
         Ensure that there is no user with the same email address.
@@ -39,7 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
             )
         return value
 
-    def create(self, validated_data):
+    def create(self, validated_data) -> AbstractBaseUser:
         user = User.objects.create(
             username=validated_data["username"],
             email=validated_data["email"],

@@ -6,18 +6,18 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('friend_request', '0004_friendlist'),
+        ("friend_request", "0004_friendlist"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='friendlist',
-            old_name='friend_id',
-            new_name='user_idA',
+            model_name="friendlist",
+            old_name="friend_id",
+            new_name="user_idA",
         ),
         migrations.RenameField(
-            model_name='friendlist',
-            old_name='user_id',
-            new_name='user_idB',
+            model_name="friendlist",
+            old_name="user_id",
+            new_name="user_idB",
         ),
     ]

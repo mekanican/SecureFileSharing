@@ -33,11 +33,15 @@
     }
   },
   "cSpell.words": [
+    "asgi",
     "authtoken",
     "Filesharing",
+    "friendlist",
+    "friendrequest",
     "gmpy",
     "livereload",
     "minio",
-    "primality"
+    "primality",
+    "simplejwt"
   ]
 }
