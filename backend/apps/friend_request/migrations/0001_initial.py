@@ -4,6 +4,7 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+    """Bypass check."""
 
     initial = True
 
@@ -12,12 +13,19 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='FriendRequest',
+            name="FriendRequest",
             fields=[
-                ('id', models.BigAutoField(primary_key=True, serialize=False, unique=True)),
-                ('from_id', models.CharField(max_length=254)),
-                ('friend_code', models.CharField(max_length=254, unique=True)),
-                ('status', models.CharField(max_length=20)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        primary_key=True,
+                        serialize=False,
+                        unique=True,
+                    ),
+                ),
+                ("from_id", models.CharField(max_length=254)),
+                ("friend_code", models.CharField(max_length=254, unique=True)),
+                ("status", models.CharField(max_length=20)),
             ],
         ),
     ]

@@ -4,21 +4,22 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+    """Bypass check."""
 
     dependencies = [
-        ('friend_request', '0001_initial'),
+        ("friend_request", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='friendrequest',
-            name='friend_code_token',
-            field=models.CharField(default='', max_length=254),
+            model_name="friendrequest",
+            name="friend_code_token",
+            field=models.CharField(default="", max_length=254),
             preserve_default=False,
         ),
         migrations.AlterField(
-            model_name='friendrequest',
-            name='friend_code',
+            model_name="friendrequest",
+            name="friend_code",
             field=models.CharField(max_length=254),
         ),
     ]

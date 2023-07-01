@@ -18,7 +18,7 @@ User = get_user_model()
 class RSAKeyGenerateView(APIView):
     """API view for generating RSA public & private keys for a user."""
 
-    def get(self, request):
+    def get(self, request) -> Response:
         user_token = request.query_params.get("token")
         user = Token.objects.get(key=user_token).user
 
@@ -79,7 +79,7 @@ class RSAKeyGenerateView(APIView):
 class RSAPublicKeyGetAPIView(APIView):
     """API view for getting RSA public key for a user."""
 
-    def get(self, request):
+    def get(self, request) -> Response:
         user_token = request.query_params.get("token")
         try:
             _ = Token.objects.get(key=user_token).user

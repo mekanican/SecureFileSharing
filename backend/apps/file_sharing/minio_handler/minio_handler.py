@@ -1,4 +1,5 @@
-"""Handler for minio."""
+# pylint: skip-file
+# mypy: ignore-errors
 
 import os
 import random
@@ -7,11 +8,6 @@ from typing import Any, AnyStr
 
 from dotenv import load_dotenv
 from minio import Minio  # type: ignore
-
-# pylint skip this file
-# pylint: skip-file
-# mypy do not check type annotations for this file
-# mypy: ignore-errors
 
 load_dotenv()  # Load environment variables from .env file
 
