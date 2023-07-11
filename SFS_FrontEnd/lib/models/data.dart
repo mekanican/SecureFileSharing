@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:sfs_frontend/helper/chain.dart';
+
 import '../helper/type.dart';
 
 class Data {
@@ -11,8 +13,8 @@ class Data {
     return base64Encode(encryptedKey + encryptedData);
   }
 
-  static Data fromBytes(Bytes l, {int keysize = 32}) {
+  static Data fromBytes(Bytes l) {
     return Data(
-        encryptedData: l.sublist(keysize), encryptedKey: l.sublist(0, keysize));
+        encryptedData: l.sublist(Chain.keySize), encryptedKey: l.sublist(0, Chain.keySize));
   }
 }
