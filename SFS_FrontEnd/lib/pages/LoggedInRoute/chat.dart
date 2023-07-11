@@ -13,7 +13,9 @@ import 'package:sfs_frontend/helper/file_handler.dart';
 import 'package:sfs_frontend/helper/md5.dart';
 import 'package:sfs_frontend/helper/rsa.dart';
 import 'package:sfs_frontend/helper/chain.dart';
+import 'package:sfs_frontend/helper/signature.dart';
 import 'package:sfs_frontend/helper/socketio_handler.dart';
+import 'package:sfs_frontend/models/signed_data.dart';
 
 import 'package:sfs_frontend/services/chat_controller.dart';
 import 'package:sfs_frontend/services/detect_controller.dart';
@@ -93,6 +95,9 @@ class _ChatPageState extends State<ChatPage> {
     if (message is types.FileMessage) {
       var uri = message.uri;
       var filename = message.name;
+      if (message.author.id == userState.userId.toString()) {
+        return;
+      }
       if (uri.startsWith("http")) {
         try {
           // Load spinner
@@ -108,7 +113,16 @@ class _ChatPageState extends State<ChatPage> {
           await downloadFile(uri, randomName);
           var data = await openFile(randomName);
           var privKey = await getPrivKey(userState.userId);
-          var trueData = Chain.decrypt(privKey, Data.fromBytes(data));
+
+          RSAPublicKey pubkey = await keyController.getOtherPubKey(widget.otherID);
+          SignedData sd = SignedData.fromBytes(data);
+          if (!Signature.checkSignature(sd.data.encryptedKey, sd.signature, pubkey)) {
+            //  Wrong signature, abort;
+            return;
+          }
+          
+
+          var trueData = Chain.decrypt(privKey, sd.data);
           var result = await FilePicker.platform.getDirectoryPath();
           var f = File("$result/$filename");
           f.writeAsBytes(trueData);
@@ -147,9 +161,14 @@ class _ChatPageState extends State<ChatPage> {
       }
 
       RSAPublicKey pubkey = await keyController.getOtherPubKey(widget.otherID);
+      RSAPrivateKey privKey = await getPrivKey(userState.userId);
+
       Data d = Chain.encrypt(pubkey, data);
+      var sig = Signature.getSignature(d.encryptedKey, privKey); 
+      SignedData sd = SignedData(sig, d);
+
       await uploadController.upload(
-          widget.otherID, result.files.single.name, d.toBase64());
+          widget.otherID, result.files.single.name, sd.toBase64());
     }
   }
 }

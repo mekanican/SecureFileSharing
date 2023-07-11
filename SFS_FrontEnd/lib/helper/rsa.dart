@@ -11,6 +11,12 @@ class RSAPublicKey {
     return writeBigInt(message.modPow(e, n));
   }
 
+  //  Same functionality but for another purpose!
+  Bytes unsignData(Bytes data) {
+    BigInt enc = readBytes(data);
+    return writeBigInt(enc.modPow(e, n));
+  }
+
   RSAPublicKey.fromJSON(Map<String, String> json)
       : n = BigInt.parse(json["n"]!),
         e = BigInt.parse(json["e"]!);
@@ -29,6 +35,13 @@ class RSAPrivateKey {
   RSAPrivateKey({required this.p, required this.q, required this.d});
 
   Bytes decryptData(Bytes data) {
+    BigInt enc = readBytes(data);
+    BigInt n = p * q;
+    return writeBigInt(enc.modPow(d, n));
+  }
+
+  //  Same functionality but for another purpose!
+  Bytes signData(Bytes data) {
     BigInt enc = readBytes(data);
     BigInt n = p * q;
     return writeBigInt(enc.modPow(d, n));
