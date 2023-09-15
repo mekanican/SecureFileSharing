@@ -1,16 +1,20 @@
-# sfs_frontend
-
-A new Flutter project.
+# SFS client app
 
 ## Getting Started
+Install `flutter`
+`https://docs.flutter.dev/get-started/install`
+Then download all dependency for project:
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+```
 
-A few resources to get you started if this is your first Flutter project:
+To run the app:
+```bash
+flutter run
+# or to build the app
+flutter build <flavor>
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Note:
+Tested only on Windows & Linux version, others may be unusable!
