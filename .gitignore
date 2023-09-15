@@ -114,3 +114,4 @@ FileStorage/minio/*
 backend/Pipfile
 
 venv/
+backend/.env
